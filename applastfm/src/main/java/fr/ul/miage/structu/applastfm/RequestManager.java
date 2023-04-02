@@ -1,77 +1,205 @@
 package fr.ul.miage.structu.applastfm;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
-import com.google.gson.JsonArray;
+
 
 public class RequestManager {
-    private String appKEY;
-
-    // Information sur un style musicale
-    public Document getTagMusicInfo(String tag) {
-
-        this.appKEY = "dcfdc8018e4fab59a9015539adc6b50e";
-        // Préparation de la requete
-        String url = " http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag=" + tag + "&api_key=" + this.appKEY
-                + "&format=json";
-        System.out.println(url);
-        HTTPTools httpTools = new HTTPTools();
+    private String appKEY = "dcfdc8018e4fab59a9015539adc6b50e";
+    
+    public String request(String url) {
+    	HTTPTools httpTools = new HTTPTools();
         String jsonResponse = httpTools.sendGet(url);
         Document docLastFm = Document.parse(jsonResponse);
 
         // Création du JSON a retourner
         Document respDoc = new Document();
-        // Exctraction de données de docLastFm et insertion dans respDoc
-        // Voir l'API org.bson.Document
-        return docLastFm;
+        return jsonResponse;
+    }
+    
+    // Information sur un style musicale
+    public ArrayList<String> getTagMusicInfo(String tag) {
+        String url = " http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag=" + tag + "&api_key=" + this.appKEY
+                + "&format=json";
+        
+        String jsonResponse = request(url);
+        
+        ArrayList<String> res = new ArrayList<>();
+        JSONObject json = new JSONObject(jsonResponse);
+        JSONObject jsonObj = json.getJSONObject("tag").getJSONObject("wiki");
+        String summary = "Résumé : \n";
+        summary = summary + jsonObj.getString("summary");
+        String content = "Intégralité : \n";
+        content = content + jsonObj.getString("content");
+        res.add(summary);
+        res.add(content);
+        
+        
+        return res;
 
     }
 
     // Information sur un album
-    public void getAlbumMusicInfo(String nomAlbum, String nomArtiste)
-            throws JsonMappingException, JsonProcessingException {
-
-        this.appKEY = "dcfdc8018e4fab59a9015539adc6b50e";
-        // Préparation de la requete
-
+    public  ArrayList<Object> getAlbumMusicInfo(String nomAlbum, String nomArtiste) {
         String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=" + this.appKEY + "&artist="
                 + nomArtiste + "&album=" + nomAlbum + "&format=json";
-        System.out.println(url);
-        HTTPTools httpTools = new HTTPTools();
-        String jsonResponse = httpTools.sendGet(url);
-        Document docLastFm = Document.parse(jsonResponse);
+        String jsonResponse = request(url);
 
-        // Met dans la liste nbrTitre le numéro de chaques titre de l'album et l'affiche
+       
         // Met dans la liste nomTitre le titre de chaques musique de l'album et
         // l'affiche
-        ArrayList<Integer> nbrTitre = new ArrayList<>();
+        ArrayList<Object> res = new ArrayList<>();
         ArrayList<String> nomTitre = new ArrayList<>();
         JSONObject json = new JSONObject(jsonResponse);
         JSONArray jsonArray = json.getJSONObject("album").getJSONObject("tracks").getJSONArray("track");
+        int nbrPiste = 0;
+        int duration = 0;
+        for (int i = 0; i < jsonArray.length(); i++) {
+            
+        	nbrPiste = i;
+        	
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            nomTitre.add(jsonObject.getString("name"));
+            duration = duration + jsonObject.optInt("duration",0);
+
+        }
+        
+        res.add(nbrPiste);
+        res.add(duration);
+        for (int i = 0; i < nomTitre.size(); i++) {
+        	res.add(nomTitre.get(i));
+		}
+        return res;
+    }
+    
+    //Rechercher un artiste à partir d'un album
+    public String ArtisteNom(String nomAlbum) {   
+
+        String url = "http://ws.audioscrobbler.com/2.0/?method=album.search&album="+nomAlbum+"&api_key=" + this.appKEY + "&format=json";
+        String jsonResponse = request(url);
+     
+        ArrayList<String> nomsArtiste = new ArrayList<>();
+        
+        JSONObject json = new JSONObject(jsonResponse);
+        JSONArray jsonArray = json.getJSONObject("results").getJSONObject("albummatches").getJSONArray("album");
 
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObjectnbr = jsonArray.getJSONObject(i).getJSONObject("@attr");
-            nbrTitre.add(jsonObjectnbr.getInt("rank"));
+            JSONObject jsonObjectnbr = jsonArray.getJSONObject(i);
+            nomsArtiste.add(jsonObjectnbr.getString("artist"));
 
-            JSONObject jsonObjectnom = jsonArray.getJSONObject(i);
-            nomTitre.add(jsonObjectnom.getString("name"));
+            
 
         }
+        HashSet<String> supDouble = new HashSet<>(nomsArtiste);
 
-        for (int index = 0; index < nbrTitre.size(); index++) {
-            System.out.println(nbrTitre.get(index));
-            System.out.println(nomTitre.get(index));
+        nomsArtiste = new ArrayList<>(supDouble);
+        String result="voici les artistes ayant un album du nom "+nomAlbum+": \n";
+        for (int index = 0; index < nomsArtiste.size(); index++) {
+        	result = result+nomsArtiste.get(index)+"\n";
+            
+           
         }
+        return result;
+        
+        
 
     }
+    
+    //recherche les artistes similaire d'un artiste :
+    public String ArtristeSimilaire(String nomArtiste) {       
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist="+nomArtiste+"&api_key="+this.appKEY+"&format=json";        
+        String jsonResponse = request(url);
+        
+        ArrayList<String> nomsArtiste = new ArrayList<>();
+        
+        JSONObject json = new JSONObject(jsonResponse);
+        JSONArray jsonArray = json.getJSONObject("similarartists").getJSONArray("artist");
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObjectnbr = jsonArray.getJSONObject(i);
+            nomsArtiste.add(jsonObjectnbr.getString("name"));
+
+            
+        }
+        HashSet<String> supDouble = new HashSet<>(nomsArtiste);
+        nomsArtiste = new ArrayList<>(supDouble);
+        String result="voici les artistes similaires à "+nomArtiste+": \n";
+        for (int index = 0; index < nomsArtiste.size(); index++) {
+        	result = result+nomsArtiste.get(index)+"\n";
+            
+          
+        }
+   
+        return result;
+        
+        
+
+    }
+  //recherche le albums d'un artiste :
+    public String TopAlbum(String nomArtiste) {       
+        String url ="http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist="+nomArtiste+"&api_key="+this.appKEY+"&format=json ";
+        String jsonResponse = request(url);
+        
+        ArrayList<String> nomsArtiste = new ArrayList<>();
+        
+        JSONObject json = new JSONObject(jsonResponse);
+        JSONArray jsonArray = json.getJSONObject("topalbums").getJSONArray("album");
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObjectnbr = jsonArray.getJSONObject(i);
+            nomsArtiste.add(jsonObjectnbr.getString("name"));
+
+            
+        }
+        HashSet<String> supDouble = new HashSet<>(nomsArtiste);
+        nomsArtiste = new ArrayList<>(supDouble);
+        String result="voici les albums de "+nomArtiste+": \n";
+        for (int index = 0; index < nomsArtiste.size(); index++) {
+        	result = result+nomsArtiste.get(index)+"\n";
+            
+          
+        }
+       
+        return result;
+        
+        
+
+    }
+    //Retourne le top 50 d'un pay
+    public String Top50pays(String nomPays) {       
+        String url ="http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country="+nomPays+"&api_key="+this.appKEY+"&format=json";
+        String jsonResponse = request(url);
+        
+        ArrayList<String> nomsMusiques = new ArrayList<>();
+        
+        JSONObject json = new JSONObject(jsonResponse);
+        JSONArray jsonArray = json.getJSONObject("tracks").getJSONArray("track");
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObjectnbr = jsonArray.getJSONObject(i);
+            nomsMusiques.add(jsonObjectnbr.getString("name"));
+
+            
+        }
+        HashSet<String> supDouble = new HashSet<>(nomsMusiques);
+        nomsMusiques = new ArrayList<>(supDouble);
+        String result="voici le top 50 pour le pays séléctioné : ("+nomPays+") \n";
+        for (int index = 0; index < nomsMusiques.size(); index++) {
+        	result = result+nomsMusiques.get(index)+"\n";
+            
+          
+        }
+       
+        return result;
+        
+        
+
+    }
+    
 
 }

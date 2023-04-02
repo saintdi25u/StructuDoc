@@ -10,9 +10,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class App {
     public static void main(String[] args) throws JsonMappingException, JsonProcessingException {
         RequestManager rm = new RequestManager();
-        // System.out.println(rm.getTagMusicInfo("disco"));
-        rm.getAlbumMusicInfo("Cosmopolitanie", "Soprano");
+        //rm.getTagMusicInfo("disco");
+        //rm.getAlbumMusicInfo("Recovery", "Eminem");
+        ConnexionIHM.main(args);
+    	//rm.ArtisteNom("Cosmopolitanie");
+        //rm.ArtristeSimilaire(null);
 
     }
     // API-KEY : dcfdc8018e4fab59a9015539adc6b50e
-}
+} 

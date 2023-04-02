@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="821.0" prefWidth="1368.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structu.applastfm.AppLastFMController">
+   <children>
+      <Text fill="#0c1eed" layoutX="614.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AppLastFM">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Text>
+      <Button fx:id="choix" layoutX="665.0" layoutY="776.0" mnemonicParsing="false" onAction="#ReponseRequette" text="Valider" />
+      <Text fill="#ff9900" layoutX="31.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Que voulez-vous faire ?">
+         <font>
+            <Font size="27.0" />
+         </font>
+      </Text>
+      <CheckBox fx:id="choixTag" layoutX="49.0" layoutY="153.0" mnemonicParsing="false" text="Infomration sur un TAG">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </CheckBox>
+      <Text layoutX="42.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du TAG : " />
+      <TextField fx:id="nomTagIHM" layoutX="127.0" layoutY="187.0" text="disco" />
+      <TextArea fx:id="reponseAPI" layoutX="20.0" layoutY="486.0" prefHeight="257.0" prefWidth="1328.0" />
+      <TextField fx:id="nomAlbum1" layoutX="437.0" layoutY="192.0" text="Cosmopolitanie" />
+      <Text layoutX="335.0" layoutY="209.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom de l'album : " />
+      <CheckBox fx:id="choixAlbum" layoutX="335.0" layoutY="158.0" mnemonicParsing="false" text="rechercher un artiste par nom d'album">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </CheckBox>
+      <Text fx:id="erreur" fill="#e80606" layoutX="31.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MessageErreur" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <CheckBox fx:id="choixResumTag" layoutX="47.0" layoutY="224.0" mnemonicParsing="false" text="Résumé">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="choixInteTag" layoutX="158.0" layoutY="224.0" mnemonicParsing="false" text="Intégralité">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="choixAlbumArtiste" layoutX="733.0" layoutY="151.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="276.0" text="informations Album Artiste :">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </CheckBox>
+      <Text layoutX="733.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom de l'album : " />
+      <TextField fx:id="nomAlbum2" layoutX="835.0" layoutY="182.0" text="Recovery" />
+      <Text layoutX="733.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom de l'artiste : " />
+      <TextField fx:id="nomArtiste1" layoutX="835.0" layoutY="218.0" text="Eminem" />
+      <TextField fx:id="nomArtiste2" layoutX="1154.0" layoutY="180.0" text="Eminem" />
+      <Text layoutX="1052.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom de l'artiste : " />
+      <CheckBox fx:id="infoArtiste" layoutX="1052.0" layoutY="149.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="276.0" text="informations sur un Artiste :">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="ArtisteSimilaire" layoutX="1052.0" layoutY="220.0" mnemonicParsing="false" text="Artistes similaire">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="topAlbum" layoutX="1190.0" layoutY="221.0" mnemonicParsing="false" text="Top Albums">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <ComboBox fx:id="nomPays" layoutX="49.0" layoutY="351.0" prefHeight="25.0" prefWidth="218.0" />
+      <CheckBox fx:id="choixTop50Pays" layoutX="53.0" layoutY="304.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="149.0" text="Top 50 pays">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </CheckBox>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="330.0" layoutX="302.0" layoutY="131.0" stroke="BLACK" strokeType="INSIDE" width="19.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="330.0" layoutX="699.0" layoutY="131.0" stroke="BLACK" strokeType="INSIDE" width="19.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="330.0" layoutX="1018.0" layoutY="131.0" stroke="BLACK" strokeType="INSIDE" width="19.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="19.0" layoutX="36.0" layoutY="261.0" stroke="BLACK" strokeType="INSIDE" width="1286.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="19.0" layoutX="36.0" layoutY="442.0" stroke="BLACK" strokeType="INSIDE" width="1286.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="19.0" layoutX="36.0" layoutY="131.0" stroke="BLACK" strokeType="INSIDE" width="1286.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="330.0" layoutX="22.0" layoutY="131.0" stroke="BLACK" strokeType="INSIDE" width="19.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffa81f" height="330.0" layoutX="1319.0" layoutY="131.0" stroke="BLACK" strokeType="INSIDE" width="19.0" />
+   </children>
+</AnchorPane>

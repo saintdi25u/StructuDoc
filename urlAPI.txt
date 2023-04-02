@@ -1,0 +1,11 @@
+Nom Artistes album
+http://ws.audioscrobbler.com/2.0/?method=album.search&album=Cosmopolitanie&api_key=dcfdc8018e4fab59a9015539adc6b50e&format=json
+
+Info Album
+http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=dcfdc8018e4fab59a9015539adc6b50e&artist=Eminem&album=Recovery&format=json
+
+TAG
+http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag=disco&api_key=dcfdc8018e4fab59a9015539adc6b50e&format=json
+
+Artiste Similaire
+http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=cher&api_key=dcfdc8018e4fab59a9015539adc6b50e&format=json
