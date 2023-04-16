@@ -11,21 +11,17 @@ public class ConnexionIHM extends Application {
 	public void start(Stage primaryStage) {
 		primaryStage.setTitle("AppLastFM");
 		try {
-	        Parent root = FXMLLoader.load(getClass().getResource("/AppLastFM.fxml"));  
+			Parent root = FXMLLoader.load(getClass().getResource("/AppLastFM.fxml"));
 			Scene scene = new Scene(root);
-			
+
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		 
-		
+
 	}
-	
-	
 
 	public static void main(String[] args) {
 		launch(args);
