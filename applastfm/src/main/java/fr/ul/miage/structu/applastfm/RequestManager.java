@@ -69,7 +69,7 @@ public class RequestManager {
                     .append("content", content));
             System.out.println("Insertion successful");
         } else {
-            System.out.println(doc.toJson());
+            System.out.println(doc.get("name"));
         }
         // return res;
     }
