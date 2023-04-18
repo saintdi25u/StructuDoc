@@ -13,8 +13,10 @@ import org.json.JSONObject;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
@@ -26,26 +28,27 @@ public class RequestManager {
     public String request(String url) {
         HTTPTools httpTools = new HTTPTools();
         String jsonResponse = httpTools.sendGet(url);
-        Document docLastFm = Document.parse(jsonResponse);
-
         // Création du JSON a retourner
-        Document respDoc = new Document();
         return jsonResponse;
+    }
+
+    public MongoCollection<Document> connectAndTestIfCollectionExist(String collectionName) {
+        MongoDatabase database = MongoClientConnection.connect();
+        // MongoCollection<Document> collection = database.getCollection("test");
+        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
+                .contains(collectionName);
+
+        if (!collectionExists) {
+            System.out.println("Collection n'existe pas");
+            database.createCollection(collectionName);
+        }
+        MongoCollection<Document> collection = database.getCollection(collectionName);
+        return collection;
     }
 
     // Information sur un style musical
     public void getTagMusicInfo(String tag) {
-        MongoCollection<Document> collection = null;
-        MongoDatabase database = MongoClientConnection.connect();
-        // MongoCollection<Document> collection = database.getCollection("test");
-        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
-                .contains("GCSTM_tag");
-
-        if (!collectionExists) {
-            System.out.println("Existe pas");
-            database.createCollection("GCSTM_tag");
-        }
-        collection = database.getCollection("GCSTM_tag");
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_tag");
         Bson projectionFields = Projections.fields(Projections.include("name", "summary", "content"),
                 Projections.excludeId());
         Document doc = collection.find(eq("name", tag)).projection(projectionFields).first();
@@ -76,16 +79,7 @@ public class RequestManager {
 
     // Information sur un album
     public void getAlbumMusicInfo(String nomAlbum, String nomArtiste) {
-        MongoCollection<Document> collection = null;
-        MongoDatabase database = MongoClientConnection.connect();
-        // MongoCollection<Document> collection = database.getCollection("test");
-        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
-                .contains("GCSTM_album");
-        if (!collectionExists) {
-            System.out.println("Existe pas");
-            database.createCollection("GCSTM_album");
-        }
-        collection = database.getCollection("GCSTM_album");
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_album");
         Bson projectionFields = Projections.fields(
                 Projections.include("name", "artist", "nbMusic", "music", "duration", "publicationDate"),
                 Projections.excludeId());
@@ -163,15 +157,7 @@ public class RequestManager {
     }
 
     public void getInfoArtiste(String nameArtist) {
-        MongoCollection<Document> collection = null;
-        MongoDatabase database = MongoClientConnection.connect();
-        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
-                .contains("GCSTM_artist");
-        if (!collectionExists) {
-            System.out.println("Existe pas --> Creation collection");
-            database.createCollection("GCSTM_artist");
-        }
-        collection = database.getCollection("GCSTM_artist");
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_artist");
         Bson projectionFields = Projections.fields(
                 Projections.include("name", "albums", "tracks", "tags", "similarArtists"),
                 Projections.excludeId());
@@ -289,18 +275,10 @@ public class RequestManager {
 
     // Retourne le top 10 ( a revoir je pense)
     public void Top10Global(String nomPays) {
-        MongoCollection<Document> collection = null;
-        MongoDatabase database = MongoClientConnection.connect();
-        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
-                .contains("GCSTM_top10");
-        if (!collectionExists) {
-            System.out.println("Existe pas --> Creation collection");
-            database.createCollection("GCSTM_top10");
-        }
-
-        collection = database.getCollection("GCSTM_top10");
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_top10");
         Bson projectionFields = Projections.fields(
-                Projections.include("places", "top10song", "top10tags", "nbListening", "nbAuditors", "date"),
+                Projections.include("places", "top10song", "top10tags", "top10artists", "nbListening", "nbAuditors",
+                        "date"),
                 Projections.excludeId());
         // Document doc = collection.find((eq("country",
         // nomPays))).projection(projectionFields)
@@ -311,8 +289,10 @@ public class RequestManager {
         JSONArray jsonArray;
         ArrayList<String> top10track = new ArrayList<String>();
         ArrayList<String> top10tag = new ArrayList<String>();
+        ArrayList<String> top10artists = new ArrayList<String>();
         String track = "";
         String tag = "";
+        String artist = "";
         int nbAuditors = 0;
         int nbListening = 0;
         if (nomPays == "") {
@@ -337,6 +317,16 @@ public class RequestManager {
                 tag = "" + (j + 1) + " - " + jsonArray.getJSONObject(j).getString("name");
                 top10tag.add(tag);
             }
+            // top10 artists
+            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&limit=10&api_key=" + this.appKEY
+                    + "&format=json";
+            jsonResponse = request(url);
+            json = new JSONObject(jsonResponse);
+            jsonArray = json.getJSONObject("artists").getJSONArray("artist");
+            for (int l = 0; l < jsonArray.length(); l++) {
+                artist = "" + (l + 1) + " - " + jsonArray.getJSONObject(l).getString("name");
+                top10artists.add(tag);
+            }
         } else {
             url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&limit=10&country=" + nomPays
                     + "&api_key="
@@ -346,8 +336,19 @@ public class RequestManager {
             jsonArray = json.getJSONObject("tracks").getJSONArray("track");
             for (int i = 0; i < jsonArray.length(); i++) {
                 track = "" + (i + 1) + " - " + jsonArray.getJSONObject(i).getString("name");
-                nbAuditors += jsonArray.getJSONObject(i).getInt("listeners");
+                // nbAuditors += jsonArray.getJSONObject(i).getInt("listeners");
                 top10track.add(track);
+            }
+            url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&limit=10&country=" + nomPays
+                    + "&api_key="
+                    + this.appKEY + "&format=json";
+            jsonResponse = request(url);
+            json = new JSONObject(jsonResponse);
+            jsonArray = json.getJSONObject("topartists").getJSONArray("artist");
+            for (int j = 0; j < jsonArray.length(); j++) {
+                artist = "" + (j + 1) + " - " + jsonArray.getJSONObject(j).getString("name");
+                // nbAuditors += jsonArray.getJSONObject(j).getInt("listeners");
+                top10artists.add(artist);
             }
         }
 
@@ -360,6 +361,7 @@ public class RequestManager {
                 .append("places", nomPays)
                 .append("top10song", top10track)
                 .append("top10tags", top10tag)
+                .append("top10artists", top10artists)
                 .append("nbListening", nbListening)
                 .append("nbAuditors", nbAuditors)
                 .append("date", sysdate)); // trouver solution pour savoir quoi mettre en valeur
@@ -423,6 +425,123 @@ public class RequestManager {
         // "albumCommun"),
         // Projections.excludeId());
 
+    }
+
+    public void expressOpinionOnTag(String name, int note, String comment) {
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
+        Bson projectionFields = Projections.fields(
+                // subject = style, album, chanson, artist...
+                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.excludeId());
+        // Document doc = collection.find((eq("country",
+        // nomPays))).projection(projectionFields).first();
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String sysdate = s.format(date);
+        String url = "http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&api_key=" + this.appKEY
+                + "&format=json&tag=" + name;
+        String jsonResponse = request(url);
+        if (jsonResponse != "404") {
+            InsertOneResult result = collection.insertOne(new Document()
+                    .append("_id", new ObjectId())
+                    .append("subject", "tag")
+                    .append("name", name)
+                    .append("notation", note)
+                    .append("comment", comment)
+                    .append("publishedOn", sysdate));
+            System.out.println("INSERTION AVIS");
+        } else {
+            System.out.println("ERROR IN THE REQUEST");
+        }
+    }
+
+    public void expressOpinionOnAlbum(String nameAlbum, String nameArtist, int note, String comment) {
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
+        Bson projectionFields = Projections.fields(
+                // subject = style, album, chanson, artist...
+                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.excludeId());
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String sysdate = s.format(date);
+        String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=" + this.appKEY
+                + "&format=json&album=" + nameAlbum + "&artist=" + nameArtist;
+        String jsonResponse = request(url);
+        if (jsonResponse != "404") {
+            InsertOneResult result = collection.insertOne(new Document()
+                    .append("_id", new ObjectId())
+                    .append("subject", "album")
+                    .append("name", nameAlbum)
+                    .append("notation", note)
+                    .append("comment", comment)
+                    .append("publishedOn", sysdate));
+            System.out.println("INSERTION AVIS");
+        } else {
+            System.out.println("ERROR IN THE REQUEST");
+        }
+    }
+
+    public void expressOpinionOnTrack(String nameTrack, String nameArtist, int note, String comment) {
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
+
+        Bson projectionFields = Projections.fields(
+                // subject = style, album, chanson, artist...
+                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.excludeId());
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String sysdate = s.format(date);
+        String url = "http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=" + this.appKEY
+                + "&format=json&track=" + nameTrack + "&artist=" + nameArtist;
+        String jsonResponse = request(url);
+        if (jsonResponse != "404") {
+            InsertOneResult result = collection.insertOne(new Document()
+                    .append("_id", new ObjectId())
+                    .append("subject", "track")
+                    .append("name", nameTrack)
+                    .append("notation", note)
+                    .append("comment", comment)
+                    .append("publishedOn", sysdate));
+            System.out.println("INSERTION AVIS");
+        } else {
+            System.out.println("ERROR IN THE REQUEST");
+        }
+    }
+
+    public void expressOpinionOnArtist(String nameArtist, int note, String comment) {
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
+        Bson projectionFields = Projections.fields(
+                // subject = style, album, chanson, artist...
+                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.excludeId());
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String sysdate = s.format(date);
+        String url = "http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=" + this.appKEY
+                + "&format=json&artist=" + nameArtist;
+        String jsonResponse = request(url);
+        if (jsonResponse != "404") {
+            InsertOneResult result = collection.insertOne(new Document()
+                    .append("_id", new ObjectId())
+                    .append("subject", "artist")
+                    .append("name", nameArtist)
+                    .append("notation", note)
+                    .append("comment", comment)
+                    .append("publishedOn", sysdate));
+            System.out.println("INSERTION AVIS");
+        } else {
+            System.out.println("ERROR IN THE REQUEST");
+        }
+    }
+
+    public ArrayList<String> getComment(String subject) {
+        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
+        ArrayList<String> results = new ArrayList<String>();
+        MongoCursor<Document> cursor = collection.find(eq("subject", subject)).cursor();
+        while (cursor.hasNext()) {
+            results.add(cursor.next().toJson());
+        }
+        return results;
     }
 
 }
