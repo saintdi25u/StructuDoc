@@ -92,7 +92,7 @@ public class RequestManager {
         
             String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=" + nomAlbum + "&api_key=" + this.appKEY + "&format=json&artist="+nomArtiste;
             String jsonResponse = request(url);
-            if(jsonResponse!="404") {
+            if(jsonResponse!="erreur") {
             	
             	ArrayList<Object> res = new ArrayList<>();
             	ArrayList<String> nomTitre = new ArrayList<>();
