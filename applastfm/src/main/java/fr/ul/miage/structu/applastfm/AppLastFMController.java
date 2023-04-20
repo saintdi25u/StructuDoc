@@ -106,15 +106,15 @@ public class AppLastFMController {
 
 			switch (choix) {
 				case 0:
-					// ArrayList<String> resRequet = rm.getTagMusicInfo(nomTagIHM.getText());
-
-					// if (choixResumTag.isSelected() && !choixInteTag.isSelected()) {
-					// reponseAPI.setText(resRequet.get(0));
-					// } else if (choixInteTag.isSelected() && !choixResumTag.isSelected()) {
-					// reponseAPI.setText(resRequet.get(1));
-					// } else {
-					// reponseAPI.setText(resRequet.get(0) + "\n\n\n" + resRequet.get(1));
-					// }
+//					ArrayList<String> resRequet = rm.getTagMusicInfo(nomTagIHM.getText());
+//
+//					 if (choixResumTag.isSelected() && !choixInteTag.isSelected()) {
+//					 reponseAPI.setText(resRequet.get(0));
+//					 } else if (choixInteTag.isSelected() && !choixResumTag.isSelected()) {
+//					 reponseAPI.setText(resRequet.get(1));
+//					 } else {
+//					 reponseAPI.setText(resRequet.get(0) + "\n\n\n" + resRequet.get(1));
+//					 }
 
 					break;
 				case 1:
