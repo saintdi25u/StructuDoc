@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+
 import static com.mongodb.client.model.Filters.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -87,38 +89,46 @@ public class RequestManager {
                 .first();
 
         if (doc == null) {
-            String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=" + this.appKEY + "&artist="
-                    + nomArtiste + "&album=" + nomAlbum + "&format=json";
+        
+            String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=" + nomAlbum + "&api_key=" + this.appKEY + "&format=json&artist="+nomArtiste;
             String jsonResponse = request(url);
-            ArrayList<Object> res = new ArrayList<>();
-            ArrayList<String> nomTitre = new ArrayList<>();
-            JSONObject json = new JSONObject(jsonResponse);
-            JSONArray jsonArray = json.getJSONObject("album").getJSONObject("tracks").getJSONArray("track");
-            int nbrPiste = 0;
-            double duration = 0;
-
-            // a revoir
-            for (int i = 0; i < jsonArray.length(); i++) {
-                nbrPiste = i;
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                nomTitre.add(jsonObject.getString("name"));
-                duration = duration + jsonObject.optInt("duration", 0);
+            if(jsonResponse!="404") {
+            	
+            	ArrayList<Object> res = new ArrayList<>();
+            	ArrayList<String> nomTitre = new ArrayList<>();
+            	JSONObject json = new JSONObject(jsonResponse);
+            	if (json.getJSONObject("album").has("tracks")) {
+            		if (json.getJSONObject("album").getJSONObject("tracks").get("track") instanceof JSONArray) {
+            			JSONArray jsonArray = json.getJSONObject("album").getJSONObject("tracks").getJSONArray("track");
+            			int nbrPiste = 0;
+            			double duration = 0;
+            			
+            			// a revoir
+            			for (int i = 0; i < jsonArray.length(); i++) {
+            				nbrPiste = i;
+            				JSONObject jsonObject = jsonArray.getJSONObject(i);
+            				nomTitre.add(jsonObject.getString("name"));
+            				duration = duration + jsonObject.optInt("duration", 0);
+            			}
+            			res.add(nbrPiste);
+            			res.add(duration);
+            			for (int i = 0; i < nomTitre.size(); i++) {
+            				res.add(nomTitre.get(i));
+            			}
+            			Integer playcount = json.getJSONObject("album").optInt("playcount", 0);
+            			InsertOneResult result = collection.insertOne(new Document()
+            					.append("_id", new ObjectId())
+            					.append("name", nomAlbum)
+            					.append("artist", nomArtiste)
+            					.append("nbMusic", nbrPiste)
+            					.append("music", nomTitre)
+            					.append("duration", duration)
+            					.append("publicationDate", "")); // Cherche a trouvé la date de publication
+            			System.out.println("INSERTION");
+            		}
+            	}
             }
-            res.add(nbrPiste);
-            res.add(duration);
-            for (int i = 0; i < nomTitre.size(); i++) {
-                res.add(nomTitre.get(i));
-            }
-            Integer playcount = json.getJSONObject("album").optInt("playcount", 0);
-            InsertOneResult result = collection.insertOne(new Document()
-                    .append("_id", new ObjectId())
-                    .append("name", nomAlbum)
-                    .append("artist", nomArtiste)
-                    .append("nbMusic", nbrPiste)
-                    .append("music", nomTitre)
-                    .append("duration", duration)
-                    .append("publicationDate", "")); // Cherche a trouvé la date de publication
-            System.out.println("INSERTION");
+      
         } else {
             System.out.println(doc.toJson());
         }
@@ -190,7 +200,13 @@ public class RequestManager {
             JSONArray jsonArrayAlbums = jsonAlbums.getJSONObject("topalbums").getJSONArray("album");
             for (int k = 0; k < jsonArrayAlbums.length(); k++) {
                 listAlbums.add(jsonArrayAlbums.getJSONObject(k).getString("name"));
+                if (!jsonArrayAlbums.getJSONObject(k).getString("name").contains(" ")) {
+                	System.out.println(jsonArrayAlbums.getJSONObject(k).getString("name"));
+                	getAlbumMusicInfo(jsonArrayAlbums.getJSONObject(k).getString("name"),nameArtist);
+				}
             }
+          
+            
             url = "http://ws.audioscrobbler.com/2.0/?method=artist.getTopTracks&api_key="
                     + this.appKEY + "&artist=" + nameArtist + "&format=json";
             jsonResponseInfo = request(url);
@@ -199,7 +215,13 @@ public class RequestManager {
             JSONArray jsonArrayTracks = jsonTracks.getJSONObject("toptracks").getJSONArray("track");
             for (int l = 0; l < jsonArrayTracks.length(); l++) {
                 listTracks.add(jsonArrayTracks.getJSONObject(l).getString("name"));
+                if (!jsonArrayTracks.getJSONObject(l).getString("name").contains(" ")) {
+            		getTrack(jsonArrayTracks.getJSONObject(l).getString("name"),nameArtist);
+				}            
             }
+            
+            
+            
             Integer playcount = json.getJSONObject("artist").getJSONObject("stats").optInt("playcount", 0);
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
