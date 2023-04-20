@@ -81,7 +81,7 @@ public class RequestManager {
     public void getAlbumMusicInfo(String nomAlbum, String nomArtiste) {
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_album");
         Bson projectionFields = Projections.fields(
-                Projections.include("name", "artist", "nbMusic", "music", "duration", "publicationDate"),
+        		Projections.include("name", "artist", "nbMusic", "music", "duration","playcount", "publicationDate"),
                 Projections.excludeId());
         Document doc = collection.find(and(eq("name", nomAlbum), eq("artist", nomArtiste))).projection(projectionFields)
                 .first();
@@ -109,6 +109,7 @@ public class RequestManager {
             for (int i = 0; i < nomTitre.size(); i++) {
                 res.add(nomTitre.get(i));
             }
+            Integer playcount = json.getJSONObject("album").optInt("playcount", 0);
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
                     .append("name", nomAlbum)
@@ -159,7 +160,7 @@ public class RequestManager {
     public void getInfoArtiste(String nameArtist) {
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_artist");
         Bson projectionFields = Projections.fields(
-                Projections.include("name", "albums", "tracks", "tags", "similarArtists"),
+        		Projections.include("name", "albums", "tracks", "tags","playcount", "similarArtists"),
                 Projections.excludeId());
         Document doc = collection.find((eq("name", nameArtist))).projection(projectionFields)
                 .first();
@@ -199,6 +200,7 @@ public class RequestManager {
             for (int l = 0; l < jsonArrayTracks.length(); l++) {
                 listTracks.add(jsonArrayTracks.getJSONObject(l).getString("name"));
             }
+            Integer playcount = json.getJSONObject("artist").getJSONObject("stats").optInt("playcount", 0);
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
                     .append("name", nameArtist)
@@ -543,5 +545,117 @@ public class RequestManager {
         }
         return results;
     }
+    
+    public void getTrack(String nomMusique, String nomArtist) {
+        MongoCollection<Document> collection = null;
+        MongoDatabase database = MongoClientConnection.connect();
+        // MongoCollection<Document> collection = database.getCollection("test");
+        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
+                .contains("GCSTM_Tracks");
+
+        if (!collectionExists) {
+            System.out.println("La collection n'existe pas");
+            database.createCollection("GCSTM_Tracks");
+        }
+        collection = database.getCollection("GCSTM_Tracks");
+        Bson projectionFields = Projections.fields(Projections.include("name", "artist", "listeners","playcount", "tag"),
+                Projections.excludeId());
+        Document doc = collection.find(eq("name", nomMusique)).projection(projectionFields).first();
+        if (doc == null) {
+        	
+            String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track="+nomMusique+"&artist="+nomArtist+"&api_key=" + this.appKEY+"&format=json";                                 		
+            String jsonResponse = request(url);
+            // ArrayList<String> res = new ArrayList<>();
+            JSONObject json = new JSONObject(jsonResponse);
+            JSONObject jsobj = json.getJSONObject("track");
+            String name = jsobj.getString("name");
+            String artist = jsobj.getJSONObject("artist").getString("name");
+            Integer listeners = jsobj.optInt("listeners", 0);
+            Integer playcount = jsobj.optInt("playcount", 0);
+            
+            ArrayList<String> tags = new ArrayList<String>();
+            JSONArray jsonArray = json.getJSONObject("track").getJSONObject("toptags").getJSONArray("tag");
+            for (int i = 0; i < jsonArray.length(); i++) {
+				tags.add(jsonArray.getJSONObject(i).getString("name"));
+			}
+
+           
+            //url = "http://ws.audioscrobbler.com/2.0/?method=track.getTags&track="+nomMusique+"&artist="+nomArtist+"&api_key=" + this.appKEY+"&format=json";
+            //jsonResponse = request(url);
+            
+            
+            InsertOneResult result = collection.insertOne(new Document()
+                    .append("_id", new ObjectId())
+                    .append("name", name)
+                    .append("artist", artist)
+                    .append("listeners", listeners)
+            		.append("playcount", playcount)
+            		.append("tag", tags)); 
+            System.out.println("Insertion successful");
+        } else {
+            System.out.println(doc.get("name"));
+        }
+        // return res;
+    }
+    
+    
+    // typeDeRecherche doit être égale à Tracks, album ou artist
+    public void ecouteSup(int seuil, String typeDeRecherche, String supInf) {
+    	MongoCollection<Document> collection = null;
+        MongoDatabase database = MongoClientConnection.connect();
+        // MongoCollection<Document> collection = database.getCollection("test");
+        Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
+                .contains("GCSTM_Tracks");
+
+        if (!collectionExists) {
+            System.out.println("La collection n'existe pas");     
+        }else {
+        	Bson projectionFields= Projections.fields(Projections.include("name", "artist", "listeners","playcount", "tag"),
+                    Projections.excludeId());
+        	switch(typeDeRecherche) {        	
+	        	case "Tracks":
+	        		collection = database.getCollection("GCSTM_"+typeDeRecherche);
+	                projectionFields = Projections.fields(Projections.include("name", "artist", "listeners","playcount", "tag"),
+	                        Projections.excludeId());
+	        		break;
+	        	case "album":
+	        		collection = database.getCollection("GCSTM_"+typeDeRecherche);
+	                projectionFields = Projections.fields(Projections.include("name", "artist", "nbMusic","music","duration","playcount", "publicationDate"),
+	                        Projections.excludeId());
+	        		break;
+	        	case "artist":
+	        		collection = database.getCollection("GCSTM_"+typeDeRecherche);
+	                projectionFields = Projections.fields(Projections.include("name", "albums", "tracks","tags", "playcount","similarArtists"),
+	                        Projections.excludeId());
+	        		break;
+	        	default:
+	        		System.out.println("Erreur");
+	        		
+	        		break;
+        	}    
+        		Bson filter = null;
+        		if(supInf == "superieur") {
+        			filter = Filters.gt("playcount", seuil);
+        		}
+            	if(supInf == "inferieur") {
+                	 filter = Filters.lt("playcount", seuil);
+            	}
+            	Bson projection = Projections.include("name");
+
+            	MongoCursor<Document> cursor = collection.find(filter).projection(projection).iterator();
+
+            	while(cursor.hasNext()) {
+            	    Document doc = cursor.next();
+            	    String name = doc.getString("name");
+            	    System.out.println(name);
+            	}
+            	
+        	}
+        	
+        }
+        
+        
+    
+    
 
 }
