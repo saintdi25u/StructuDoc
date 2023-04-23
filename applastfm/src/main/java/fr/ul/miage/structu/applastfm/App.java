@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  */
 public class App {
     public static void main(String[] args) throws JsonMappingException, JsonProcessingException {
-        RequestManager rm = new RequestManager();
+        //RequestManager rm = new RequestManager();
         // rm.getTagMusicInfo("disco");
         // rm.getAlbumMusicInfo("Recovery", "Eminem");
         ConnexionIHM.main(args);

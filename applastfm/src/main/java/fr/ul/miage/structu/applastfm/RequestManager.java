@@ -49,7 +49,8 @@ public class RequestManager {
     }
 
     // Information sur un style musical
-    public void getTagMusicInfo(String tag) {
+    public ArrayList<String> getTagMusicInfo(String tag) {
+    	ArrayList<String> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_tag");
         Bson projectionFields = Projections.fields(Projections.include("name", "summary", "content"),
                 Projections.excludeId());
@@ -58,29 +59,38 @@ public class RequestManager {
             String url = " http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag=" + tag + "&api_key=" + this.appKEY
                     + "&format=json";
             String jsonResponse = request(url);
-            // ArrayList<String> res = new ArrayList<>();
+             
             JSONObject json = new JSONObject(jsonResponse);
             JSONObject jsonObj = json.getJSONObject("tag").getJSONObject("wiki");
             // String summary = "Résumé : \n";
             String summary = jsonObj.getString("summary");
             // String content = "Intégralité : \n";
             String content = jsonObj.getString("content");
-            // res.add(summary);
-            // res.add(content);
+           
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
                     .append("name", tag)
                     .append("summary", summary)
                     .append("content", content));
             System.out.println("Insertion successful");
+             res.add(tag);
+             res.add(summary);
+             res.add(content);
+             res.add("API");
         } else {
-            System.out.println(doc.get("name"));
+            //System.out.println(doc.get("name"));
+        	res.add((String) doc.get("name"));
+        	res.add((String) doc.get("summary"));
+        	res.add((String) doc.get("content"));
+        	res.add("BDD");
         }
-        // return res;
+         return res;
     }
 
     // Information sur un album
-    public void getAlbumMusicInfo(String nomAlbum, String nomArtiste) {
+    public ArrayList<Object> getAlbumMusicInfo(String nomAlbum, String nomArtiste) {
+    	ArrayList<Object> res = new ArrayList<>();
+    	
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_album");
         Bson projectionFields = Projections.fields(
         		Projections.include("name", "artist", "nbMusic", "music", "duration","playcount", "publicationDate"),
@@ -94,7 +104,7 @@ public class RequestManager {
             String jsonResponse = request(url);
             if(jsonResponse!="erreur") {
             	
-            	ArrayList<Object> res = new ArrayList<>();
+            	
             	ArrayList<String> nomTitre = new ArrayList<>();
             	JSONObject json = new JSONObject(jsonResponse);
             	if (json.getJSONObject("album").has("tracks")) {
@@ -103,18 +113,15 @@ public class RequestManager {
             			int nbrPiste = 0;
             			double duration = 0;
             			
-            			// a revoir
+            			
             			for (int i = 0; i < jsonArray.length(); i++) {
             				nbrPiste = i;
             				JSONObject jsonObject = jsonArray.getJSONObject(i);
             				nomTitre.add(jsonObject.getString("name"));
             				duration = duration + jsonObject.optInt("duration", 0);
             			}
-            			res.add(nbrPiste);
-            			res.add(duration);
-            			for (int i = 0; i < nomTitre.size(); i++) {
-            				res.add(nomTitre.get(i));
-            			}
+            			
+            			
             			Integer playcount = json.getJSONObject("album").optInt("playcount", 0);
             			InsertOneResult result = collection.insertOne(new Document()
             					.append("_id", new ObjectId())
@@ -123,18 +130,35 @@ public class RequestManager {
             					.append("nbMusic", nbrPiste)
             					.append("music", nomTitre)
             					.append("duration", duration)
+            					.append("playcount", playcount)
             					.append("publicationDate", "")); // Cherche a trouvé la date de publication
             			System.out.println("INSERTION");
+            			res.add(nomAlbum);
+            			res.add(nomArtiste);
+            			res.add(nbrPiste);
+            			res.add(nomTitre);
+            			res.add(duration);
+            			res.add("API");
+            			res.add(playcount);
+        				
+
+            			
             		}
             	}
             }
       
         } else {
-            System.out.println(doc.toJson());
+            res.add((String) doc.get("name"));
+			res.add((String) doc.get("artist"));
+			res.add((Integer) doc.get("nbMusic"));
+			res.add((ArrayList<String>) doc.get("music"));
+			res.add((Double) doc.get("duration"));
+			res.add("BDD");
+			res.add((Integer) doc.get("playcount"));
         }
         // Met dans la liste nomTitre le titre de chaques musique de l'album et
         // l'affiche
-        // return res;
+         return res;
     }
 
     // Rechercher unartiste à partir d'un album
@@ -167,7 +191,8 @@ public class RequestManager {
         return result;
     }
 
-    public void getInfoArtiste(String nameArtist) {
+    public ArrayList<Object> getInfoArtiste(String nameArtist) {
+    	ArrayList<Object> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_artist");
         Bson projectionFields = Projections.fields(
         		Projections.include("name", "albums", "tracks", "tags","playcount", "similarArtists"),
@@ -229,11 +254,28 @@ public class RequestManager {
                     .append("albums", listAlbums)
                     .append("tracks", listTracks)
                     .append("tags", listTagsArtist)
+                    .append("playcount", playcount)
                     .append("similarArtists", listSimilarArtist));
             System.out.println("INSETION INTO DATABASE");
+            res.add(nameArtist);
+			res.add(listAlbums);
+			res.add(listTracks);
+			res.add(listTagsArtist);
+			res.add(listSimilarArtist);
+			res.add(playcount);
+			res.add("API");
+			
+            
         } else {
-            System.out.println(doc.toJson());
+            res.add((String) doc.get("name"));
+			res.add((ArrayList<String>) doc.get("albums"));
+			res.add((ArrayList<String>) doc.get("tracks"));
+			res.add((ArrayList<String>) doc.get("listTagsArtist"));
+			res.add((ArrayList<String>) doc.get("listSimilarArtist"));
+			res.add((Integer) doc.get("playcount"));
+			res.add("BDD");
         }
+        return res;
     }
 
     // // recherche les artistes similaire d'un artiste :
@@ -298,98 +340,133 @@ public class RequestManager {
     // }
 
     // Retourne le top 10 ( a revoir je pense)
-    public void Top10Global(String nomPays) {
+    public ArrayList<Object> Top10Global(String nomPays, String choix) {
+    	ArrayList<Object> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_top10");
         Bson projectionFields = Projections.fields(
                 Projections.include("places", "top10song", "top10tags", "top10artists", "nbListening", "nbAuditors",
                         "date"),
                 Projections.excludeId());
-        // Document doc = collection.find((eq("country",
-        // nomPays))).projection(projectionFields)
-        // .first();
-        String jsonResponse = "";
-        String url = "";
-        JSONObject json;
-        JSONArray jsonArray;
-        ArrayList<String> top10track = new ArrayList<String>();
-        ArrayList<String> top10tag = new ArrayList<String>();
-        ArrayList<String> top10artists = new ArrayList<String>();
-        String track = "";
-        String tag = "";
-        String artist = "";
-        int nbAuditors = 0;
-        int nbListening = 0;
-        if (nomPays == "") {
-            nomPays = "global";
-            // top 10 son
-            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&limit=10&api_key=" + this.appKEY
-                    + "&format=json";
-            jsonResponse = request(url);
-            json = new JSONObject(jsonResponse);
-            jsonArray = json.getJSONObject("tracks").getJSONArray("track");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                track = "" + (i + 1) + " - " + jsonArray.getJSONObject(i).getString("name");
-                top10track.add(track);
-            }
-            // top 10 tags
-            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptags&limit=10&api_key=" + this.appKEY
-                    + "&format=json";
-            jsonResponse = request(url);
-            json = new JSONObject(jsonResponse);
-            jsonArray = json.getJSONObject("tags").getJSONArray("tag");
-            for (int j = 0; j < jsonArray.length(); j++) {
-                tag = "" + (j + 1) + " - " + jsonArray.getJSONObject(j).getString("name");
-                top10tag.add(tag);
-            }
-            // top10 artists
-            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&limit=10&api_key=" + this.appKEY
-                    + "&format=json";
-            jsonResponse = request(url);
-            json = new JSONObject(jsonResponse);
-            jsonArray = json.getJSONObject("artists").getJSONArray("artist");
-            for (int l = 0; l < jsonArray.length(); l++) {
-                artist = "" + (l + 1) + " - " + jsonArray.getJSONObject(l).getString("name");
-                top10artists.add(tag);
-            }
-        } else {
-            url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&limit=10&country=" + nomPays
-                    + "&api_key="
-                    + this.appKEY + "&format=json";
-            jsonResponse = request(url);
-            json = new JSONObject(jsonResponse);
-            jsonArray = json.getJSONObject("tracks").getJSONArray("track");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                track = "" + (i + 1) + " - " + jsonArray.getJSONObject(i).getString("name");
-                // nbAuditors += jsonArray.getJSONObject(i).getInt("listeners");
-                top10track.add(track);
-            }
-            url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&limit=10&country=" + nomPays
-                    + "&api_key="
-                    + this.appKEY + "&format=json";
-            jsonResponse = request(url);
-            json = new JSONObject(jsonResponse);
-            jsonArray = json.getJSONObject("topartists").getJSONArray("artist");
-            for (int j = 0; j < jsonArray.length(); j++) {
-                artist = "" + (j + 1) + " - " + jsonArray.getJSONObject(j).getString("name");
-                // nbAuditors += jsonArray.getJSONObject(j).getInt("listeners");
-                top10artists.add(artist);
-            }
-        }
+        
+        Document doc;
+        if (choix == "global") {
+        	  doc = collection.find((eq("places",
+        			 "global"))).projection(projectionFields)
+			         .first();
+        				
+		}else {
+			  doc = collection.find((eq("places",
+			         nomPays))).projection(projectionFields)
+			         .first();
+		}
+        
+         
+        if (doc == null) {
+	        String jsonResponse = "";
+	        String url = "";
+	        JSONObject json;
+	        JSONArray jsonArray;
+	        ArrayList<String> top10track = new ArrayList<String>();
+	        ArrayList<String> top10tag = new ArrayList<String>();
+	        ArrayList<String> top10artists = new ArrayList<String>();
+	        String track = "";
+	        String tag = "";
+	        String artist = "";
+	        int nbAuditors = 0;
+	        int nbListening = 0;
+	        if (choix == "global") {
+	            nomPays = "global";
+	            // top 10 son
+	            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&limit=10&api_key=" + this.appKEY
+	                    + "&format=json";
+	            jsonResponse = request(url);
+	            json = new JSONObject(jsonResponse);
+	            jsonArray = json.getJSONObject("tracks").getJSONArray("track");
+	            for (int i = 0; i < jsonArray.length(); i++) {
+	                track = "" + (i + 1) + " - " + jsonArray.getJSONObject(i).getString("name");
+	                top10track.add(track);
+	            }
+	            // top 10 tags
+	            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptags&limit=10&api_key=" + this.appKEY
+	                    + "&format=json";
+	            jsonResponse = request(url);
+	            json = new JSONObject(jsonResponse);
+	            jsonArray = json.getJSONObject("tags").getJSONArray("tag");
+	            for (int j = 0; j < jsonArray.length(); j++) {
+	                tag = "" + (j + 1) + " - " + jsonArray.getJSONObject(j).getString("name");
+	                top10tag.add(tag);
+	            }
+	            // top10 artists
+	            url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&limit=10&api_key=" + this.appKEY
+	                    + "&format=json";
+	            jsonResponse = request(url);
+	            json = new JSONObject(jsonResponse);
+	            jsonArray = json.getJSONObject("artists").getJSONArray("artist");
+	            for (int l = 0; l < jsonArray.length(); l++) {
+	                artist = "" + (l + 1) + " - " + jsonArray.getJSONObject(l).getString("name");
+	                top10artists.add(tag);
+	            }
+	        } else {
+	            url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&limit=10&country=" + nomPays
+	                    + "&api_key="
+	                    + this.appKEY + "&format=json";
+	            jsonResponse = request(url);
+	            json = new JSONObject(jsonResponse);
+	            jsonArray = json.getJSONObject("tracks").getJSONArray("track");
+	            for (int i = 0; i < jsonArray.length(); i++) {
+	                track = "" + (i + 1) + " - " + jsonArray.getJSONObject(i).getString("name");
+	                // nbAuditors += jsonArray.getJSONObject(i).getInt("listeners");
+	                top10track.add(track);
+	            }
+	            url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&limit=10&country=" + nomPays
+	                    + "&api_key="
+	                    + this.appKEY + "&format=json";
+	            jsonResponse = request(url);
+	            json = new JSONObject(jsonResponse);
+	            jsonArray = json.getJSONObject("topartists").getJSONArray("artist");
+	            for (int j = 0; j < jsonArray.length(); j++) {
+	                artist = "" + (j + 1) + " - " + jsonArray.getJSONObject(j).getString("name");
+	                // nbAuditors += jsonArray.getJSONObject(j).getInt("listeners");
+	                top10artists.add(artist);
+	            }
+	        }
+	
+	        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	        Date date = new Date();
+	        String sysdate = s.format(date);
+	
+	        InsertOneResult result = collection.insertOne(new Document()
+	                .append("_id", new ObjectId())
+	                .append("places", nomPays)
+	                .append("top10song", top10track)
+	                .append("top10tags", top10tag)
+	                .append("top10artists", top10artists)
+	                .append("nbListening", nbListening)
+	                .append("nbAuditors", nbAuditors)
+	                .append("date", sysdate)); // trouver solution pour savoir quoi mettre en valeur
+	        System.out.println("INSERTION IN DATABASE");
+	        
+	        res.add(nomPays);
+	        res.add(top10track);
+	        res.add(top10tag);
+	        res.add(top10artists);
+	        res.add(nbListening);
+	        res.add(nbAuditors);
+	        res.add(sysdate);
+	        res.add("API");
 
-        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        String sysdate = s.format(date);
-
-        InsertOneResult result = collection.insertOne(new Document()
-                .append("_id", new ObjectId())
-                .append("places", nomPays)
-                .append("top10song", top10track)
-                .append("top10tags", top10tag)
-                .append("top10artists", top10artists)
-                .append("nbListening", nbListening)
-                .append("nbAuditors", nbAuditors)
-                .append("date", sysdate)); // trouver solution pour savoir quoi mettre en valeur
-        System.out.println("INSERTION IN DATABASE");
+	        
+    }else {
+    	res.add((String) doc.get("places"));
+		res.add((ArrayList<String>) doc.get("top10song"));
+		res.add((ArrayList<String>) doc.get("top10tags"));
+		res.add((ArrayList<String>) doc.get("top10artists"));
+		res.add((Integer) doc.get("nbListening"));
+		res.add((Integer) doc.get("nbAuditors"));
+		res.add((String) doc.get("date"));
+		res.add("BDD");
+    }
+        return res;
 
         // Traitement des données
 
@@ -451,7 +528,8 @@ public class RequestManager {
 
     }
 
-    public void expressOpinionOnTag(String name, int note, String comment) {
+    public String expressOpinionOnTag(String name, int note, String comment) {
+    	String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
@@ -473,14 +551,16 @@ public class RequestManager {
                     .append("notation", note)
                     .append("comment", comment)
                     .append("publishedOn", sysdate));
-            System.out.println("INSERTION AVIS");
+            res = "Commentaire enregistré";
+
         } else {
-            System.out.println("ERROR IN THE REQUEST");
-        }
+            res = "Erreur d'insertion du commentaire";
+        }return res;
     }
 
-    public void expressOpinionOnAlbum(String nameAlbum, String nameArtist, int note, String comment) {
-        MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
+    public String expressOpinionOnAlbum(String nameAlbum, String nameArtist, int note, String comment) {
+    	 String res = "";
+    	MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
                 Projections.include("subject", "name", "notation", "comment", "publishedOn"),
@@ -499,13 +579,15 @@ public class RequestManager {
                     .append("notation", note)
                     .append("comment", comment)
                     .append("publishedOn", sysdate));
-            System.out.println("INSERTION AVIS");
+            res = "Commentaire enregistré";
         } else {
-            System.out.println("ERROR IN THE REQUEST");
+            res = "Erreur d'insertion du commentaire";
         }
+        return res;
     }
 
-    public void expressOpinionOnTrack(String nameTrack, String nameArtist, int note, String comment) {
+    public String expressOpinionOnTrack(String nameTrack, String nameArtist, int note, String comment) {
+    	String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
 
         Bson projectionFields = Projections.fields(
@@ -526,13 +608,15 @@ public class RequestManager {
                     .append("notation", note)
                     .append("comment", comment)
                     .append("publishedOn", sysdate));
-            System.out.println("INSERTION AVIS");
+            res = "Commentaire enregistré";
         } else {
-            System.out.println("ERROR IN THE REQUEST");
+            res = "Erreur d'insertion du commentaire";
         }
+        return res;
     }
 
-    public void expressOpinionOnArtist(String nameArtist, int note, String comment) {
+    public String expressOpinionOnArtist(String nameArtist, int note, String comment) {
+    	String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
@@ -552,23 +636,28 @@ public class RequestManager {
                     .append("notation", note)
                     .append("comment", comment)
                     .append("publishedOn", sysdate));
-            System.out.println("INSERTION AVIS");
+            res = "Commentaire enregistré";
         } else {
-            System.out.println("ERROR IN THE REQUEST");
+        	res = "Erreur d'insertion du commentaire";
         }
+        return res;
     }
 
-    public ArrayList<String> getComment(String subject) {
+    public ArrayList<String> getComment(String subject, String name) {
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         ArrayList<String> results = new ArrayList<String>();
-        MongoCursor<Document> cursor = collection.find(eq("subject", subject)).cursor();
+        MongoCursor<Document> cursor = collection.find(and(eq("subject", subject), eq("name", name))).cursor();
         while (cursor.hasNext()) {
-            results.add(cursor.next().toJson());
+            Document doc = cursor.next();
+    	    String comment = doc.getString("comment");
+    	    results.add(comment);
         }
         return results;
     }
     
-    public void getTrack(String nomMusique, String nomArtist) {
+    public 	ArrayList<Object> getTrack(String nomMusique, String nomArtist) {
+    	ArrayList<Object> res = new ArrayList<>();
+
         MongoCollection<Document> collection = null;
         MongoDatabase database = MongoClientConnection.connect();
         // MongoCollection<Document> collection = database.getCollection("test");
@@ -614,15 +703,28 @@ public class RequestManager {
             		.append("playcount", playcount)
             		.append("tag", tags)); 
             System.out.println("Insertion successful");
+            res.add(name);
+            res.add(artist);
+            res.add(listeners);
+            res.add(playcount);
+            res.add(tags);
+            res.add("API");
+            
         } else {
-            System.out.println(doc.get("name"));
+            res.add((String) doc.get("name"));
+            res.add((String) doc.get("artist"));
+            res.add((Integer) doc.get("listeners"));
+            res.add((Integer) doc.get("playcount"));
+            res.add((ArrayList<String>) doc.get("tag"));
+            res.add("BDD");
         }
-        // return res;
+         return res;
     }
     
     
     // typeDeRecherche doit être égale à Tracks, album ou artist
-    public void ecouteSup(int seuil, String typeDeRecherche, String supInf) {
+    public ArrayList<String> NbrEcouteSeuil(int seuil, String typeDeRecherche, String supInf) {
+    	ArrayList<String> res = new ArrayList<>();
     	MongoCollection<Document> collection = null;
         MongoDatabase database = MongoClientConnection.connect();
         // MongoCollection<Document> collection = database.getCollection("test");
@@ -669,10 +771,10 @@ public class RequestManager {
             	while(cursor.hasNext()) {
             	    Document doc = cursor.next();
             	    String name = doc.getString("name");
-            	    System.out.println(name);
+            	    res.add(name);
             	}
             	
-        	}
+        	}return res;
         	
         }
         
