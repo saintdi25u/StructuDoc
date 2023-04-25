@@ -504,7 +504,7 @@ public class RequestManager {
 
     // }
 
-    public ArrayList<String> searchSimilarMusicBetween2Artist(String nameArtist1, String nameArtist2) {
+    public ArrayList<Object> searchSimilarMusicBetween2Artist(String nameArtist1, String nameArtist2) {
         /**
          * ALGO EN GROS
          * // On recherche si les artistes existe dans la base de données (collection
@@ -520,7 +520,7 @@ public class RequestManager {
          * // fin pour
          * // Meme chose pour les albums.
          */
-
+    	ArrayList<Object> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_similarArtistMusic");
         ArrayList<String> musicSimiliar = new ArrayList<String>();
         Bson projectionFields = Projections.fields(
@@ -628,7 +628,9 @@ public class RequestManager {
 
         // }
         System.out.println("FINI");
-        return musicSimiliar;
+        res.add(musicSimiliar);
+        res.add(albumCommun);
+        return res;
     }
 
     public String expressOpinionOnTag(String name, int note, String comment) {

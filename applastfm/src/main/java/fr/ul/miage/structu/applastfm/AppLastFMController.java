@@ -40,7 +40,10 @@ public class AppLastFMController {
 	TextArea infoTop10;
 	@FXML
 	TextArea Tag1;
-	
+	@FXML
+	TextArea MusicSim;
+	@FXML
+	TextArea AlbumSim;
 	
 	
 	
@@ -83,6 +86,10 @@ public class AppLastFMController {
 	TextField nomALCom1;
 	@FXML
 	TextField nomTagCom1;
+	@FXML
+	TextField SimilA1;
+	@FXML
+	TextField SimilA2;
 	
 	@FXML
 	Text erreur;
@@ -131,6 +138,10 @@ public class AppLastFMController {
 	@FXML
 	Text ResCom;
 	
+	@FXML
+	Text musicSimT;
+	@FXML
+	Text AlbumSimT;
 	
 	
 	
@@ -157,6 +168,8 @@ public class AppLastFMController {
 	CheckBox choixCom;
 	@FXML
 	CheckBox choixCom1;
+	@FXML
+	CheckBox choixSimil;
 	
 
 	// CB secondaire
@@ -203,6 +216,10 @@ public class AppLastFMController {
 	HBox InfoArtisteHbox;
 	@FXML
 	HBox TopHbox;
+	@FXML
+	HBox HboxSimilar;
+	
+	
 
 	@FXML
 	public void initialize() {		
@@ -232,7 +249,9 @@ public class AppLastFMController {
 		Listeners1.setVisible(false);
 		Tag.setVisible(false);
 		Tag1.setVisible(false);
-		
+		HboxSimilar.setVisible(false);
+		musicSimT.setVisible(false);
+		AlbumSimT.setVisible(false);
 
 		reponseAPI.setVisible(false);
 		List<String> nomsPays = Arrays.asList("United States", "China", "Japan", "Germany", "United Kingdom", "India",
@@ -251,6 +270,7 @@ public class AppLastFMController {
 
 	@FXML
 	private void ReponseRequette() throws Exception {
+		HboxSimilar.setVisible(false);
 		ResCom.setVisible(false);
 		typeRequette.setVisible(true);
 		TagSelectNom.setVisible(false);
@@ -279,7 +299,8 @@ public class AppLastFMController {
 		Listeners1.setVisible(false);
 		Tag.setVisible(false);
 		Tag1.setVisible(false);
-
+		musicSimT.setVisible(false);
+		AlbumSimT.setVisible(false);
 		
 		erreur.setVisible(false);
 		reponseAPI.setText("");
@@ -294,7 +315,9 @@ public class AppLastFMController {
 		listCheckBox.add(choixsSeuil);
 		listCheckBox.add(choixCom);
 		listCheckBox.add(choixCom1);
+		listCheckBox.add(choixSimil);
 
+		
 
 		int nbrCheckBox = 0;
 		int choix = 0;
@@ -720,6 +743,29 @@ public class AppLastFMController {
 						typeRequette.setText("BDD");
 						
 					}
+					break;
+				case 8:
+					HboxSimilar.setVisible(true);
+					musicSimT.setVisible(true);
+					AlbumSimT.setVisible(true);
+					ArrayList<Object> resReq = rm.searchSimilarMusicBetween2Artist(SimilA1.getText(),SimilA2.getText());
+					ArrayList<String> mSim = (ArrayList<String>) resReq.get(0);
+					ArrayList<String> aSim = (ArrayList<String>) resReq.get(1);
+					
+					String resm = "";
+					String resa = "";
+					for (int i = 0; i < mSim.size(); i++) {
+						resm = resm + mSim.get(i)+"\n";
+					}
+					for (int i = 0; i < aSim.size(); i++) {
+						resa = resa + aSim.get(i)+"\n";
+					}
+					
+					MusicSim.setText(resm);
+					AlbumSim.setText(resa);
+
+					
+					
 					break;
 
 			}
