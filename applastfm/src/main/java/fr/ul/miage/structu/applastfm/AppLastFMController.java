@@ -94,6 +94,8 @@ public class AppLastFMController {
 	@FXML
 	Text erreur;
 	@FXML
+	Text execEnCours;
+	@FXML
 	Text TagSelectNom;
 	@FXML
 	Text TagSelectNom1;
@@ -222,7 +224,8 @@ public class AppLastFMController {
 	
 
 	@FXML
-	public void initialize() {		
+	public void initialize() {
+		execEnCours.setVisible(true);
 		ResCom.setVisible(false);
 		typeRequette.setVisible(false);
 		TagSelectNom.setVisible(false);
@@ -358,10 +361,11 @@ public class AppLastFMController {
 					repNomArtiste.setVisible(true);
 					TagSelectNom1.setVisible(true);
 					reponseAPI.setVisible(true);
+					
 
 					
 					 ArrayList<Object> resRequest2 = rm.getAlbumMusicInfo(nomAlbum2.getText(),nomArtiste1.getText());
-					 typeRequette.setText((String) resRequest2.get(5));
+					 typeRequette.setText((String) resRequest2.get(6));
 					 TagSelectNom1.setText((String) resRequest2.get(0));
 					 repNomArtiste.setText((String) resRequest2.get(1));
 					 
@@ -371,9 +375,9 @@ public class AppLastFMController {
 					 nomArtiste1.getText()
 					 + " contient au totale "
 					 + resRequest2.get(2) + " morceaux. Sa durée totale est de " +
-					 resRequest2.get(4)
+					 resRequest2.get(5)
 					 + " secondes. \n" 
-					 +"Son nombre d'écoute est de : "+resRequest2.get(6)+"\n"
+					 +"Son nombre d'écoute est de : "+resRequest2.get(7)+"\n"
 					 + "voici les noms des musiques qui composent l'album : \n";
 					 ArrayList<String> nameTracks = (ArrayList<String>) resRequest2.get(3); 
 					 for (int i = 0; i < nameTracks.size(); i++) {
@@ -748,10 +752,11 @@ public class AppLastFMController {
 					HboxSimilar.setVisible(true);
 					musicSimT.setVisible(true);
 					AlbumSimT.setVisible(true);
+
 					ArrayList<Object> resReq = rm.searchSimilarMusicBetween2Artist(SimilA1.getText(),SimilA2.getText());
 					ArrayList<String> mSim = (ArrayList<String>) resReq.get(0);
 					ArrayList<String> aSim = (ArrayList<String>) resReq.get(1);
-					
+
 					String resm = "";
 					String resa = "";
 					for (int i = 0; i < mSim.size(); i++) {
@@ -765,7 +770,7 @@ public class AppLastFMController {
 					AlbumSim.setText(resa);
 
 					
-					
+						
 					break;
 
 			}

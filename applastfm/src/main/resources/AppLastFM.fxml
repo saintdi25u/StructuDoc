@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -11,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="838.0" prefWidth="1368.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structu.applastfm.AppLastFMController">
+<AnchorPane prefHeight="838.0" prefWidth="1368.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structu.applastfm.AppLastFMController">
    <children>
       <Text fill="#0c1eed" layoutX="614.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AppLastFM">
          <font>
@@ -32,9 +37,9 @@
       <Text layoutX="46.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du TAG : " />
       <TextField fx:id="nomTagIHM" layoutX="131.0" layoutY="139.0" text="disco" />
       <TextArea fx:id="reponseAPI" layoutX="455.0" layoutY="563.0" prefHeight="216.0" prefWidth="874.0" />
-      <Text fx:id="erreur" fill="#e80606" layoutX="339.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MessageErreur" visible="false">
+      <Text fx:id="erreur" fill="#e80606" layoutX="393.0" layoutY="499.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MessageErreur" visible="false" wrappingWidth="637.0">
          <font>
-            <Font size="14.0" />
+            <Font size="24.0" />
          </font>
       </Text>
       <CheckBox fx:id="choixResumTag" layoutX="51.0" layoutY="176.0" mnemonicParsing="false" text="Résumé">
@@ -345,5 +350,6 @@
             <Font size="27.0" />
          </font>
       </Text>
+      <Text fx:id="execEnCours" fill="#ee0606" layoutX="34.0" layoutY="397.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attention, cette fonctionnalité peut prendre un certain temps à s'exécuter (&lt;2min)" wrappingWidth="252.44091796875" />
    </children>
 </AnchorPane>
