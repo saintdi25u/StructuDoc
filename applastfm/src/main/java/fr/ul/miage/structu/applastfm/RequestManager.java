@@ -55,7 +55,8 @@ public class RequestManager {
                 Projections.excludeId());
         Document doc = collection.find(eq("name", tag)).projection(projectionFields).first();
         if (doc == null) {
-            String url = " http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag=" + URLEncoder.encode(tag, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY
+            String url = " http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag="
+                    + URLEncoder.encode(tag, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY
                     + "&format=json";
             String jsonResponse = request(url);
 
@@ -100,7 +101,8 @@ public class RequestManager {
         ArrayList<String> listTags = new ArrayList<String>();
         if (doc == null) {
 
-            String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=" + URLEncoder.encode(nomAlbum, StandardCharsets.UTF_8) + "&api_key="
+            String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album="
+                    + URLEncoder.encode(nomAlbum, StandardCharsets.UTF_8) + "&api_key="
                     + this.appKEY + "&format=json&artist=" + URLEncoder.encode(nomArtiste, StandardCharsets.UTF_8);
             String jsonResponse = request(url);
             if (jsonResponse != "erreur") {
@@ -180,7 +182,7 @@ public class RequestManager {
     public String ArtisteNom(String nomAlbum) {
 
         String url = "http://ws.audioscrobbler.com/2.0/?method=album.search&album=" +
-        		URLEncoder.encode(nomAlbum, StandardCharsets.UTF_8) + "&api_key="
+                URLEncoder.encode(nomAlbum, StandardCharsets.UTF_8) + "&api_key="
                 + this.appKEY + "&format=json";
         String jsonResponse = request(url);
 
@@ -235,7 +237,7 @@ public class RequestManager {
             }
             // Traitement liste albums
             url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&api_key="
-                    + this.appKEY + "&artist=" + 
+                    + this.appKEY + "&artist=" +
                     URLEncoder.encode(nameArtist, StandardCharsets.UTF_8) + "&format=json";
             jsonResponseInfo = request(url);
 
@@ -243,9 +245,9 @@ public class RequestManager {
             JSONArray jsonArrayAlbums = jsonAlbums.getJSONObject("topalbums").getJSONArray("album");
             for (int k = 0; k < jsonArrayAlbums.length(); k++) {
                 listAlbums.add(jsonArrayAlbums.getJSONObject(k).getString("name"));
-                
+
                 getAlbumMusicInfo(jsonArrayAlbums.getJSONObject(k).getString("name"), nameArtist);
-                
+
             }
 
             url = "http://ws.audioscrobbler.com/2.0/?method=artist.getTopTracks&api_key="
@@ -256,8 +258,8 @@ public class RequestManager {
             JSONArray jsonArrayTracks = jsonTracks.getJSONObject("toptracks").getJSONArray("track");
             for (int l = 0; l < jsonArrayTracks.length(); l++) {
                 listTracks.add(jsonArrayTracks.getJSONObject(l).getString("name"));
-                    getTrack(jsonArrayTracks.getJSONObject(l).getString("name"), nameArtist);
-                
+                getTrack(jsonArrayTracks.getJSONObject(l).getString("name"), nameArtist);
+
             }
 
             Integer playcount = json.getJSONObject("artist").getJSONObject("stats").optInt("playcount", 0);
@@ -417,7 +419,8 @@ public class RequestManager {
                     top10artists.add(tag);
                 }
             } else {
-                url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&limit=10&country=" + URLEncoder.encode(nomPays, StandardCharsets.UTF_8)
+                url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&limit=10&country="
+                        + URLEncoder.encode(nomPays, StandardCharsets.UTF_8)
                         + "&api_key="
                         + this.appKEY + "&format=json";
                 jsonResponse = request(url);
@@ -428,7 +431,8 @@ public class RequestManager {
                     // nbAuditors += jsonArray.getJSONObject(i).getInt("listeners");
                     top10track.add(track);
                 }
-                url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&limit=10&country=" + URLEncoder.encode(nomPays, StandardCharsets.UTF_8)
+                url = "http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&limit=10&country="
+                        + URLEncoder.encode(nomPays, StandardCharsets.UTF_8)
                         + "&api_key="
                         + this.appKEY + "&format=json";
                 jsonResponse = request(url);
@@ -518,7 +522,7 @@ public class RequestManager {
          * // fin pour
          * // Meme chose pour les albums.
          */
-    	ArrayList<Object> res = new ArrayList<>();
+        ArrayList<Object> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_similarArtistMusic");
         ArrayList<String> musicSimiliar = new ArrayList<String>();
         Bson projectionFields = Projections.fields(
@@ -631,12 +635,12 @@ public class RequestManager {
         return res;
     }
 
-    public String expressOpinionOnTag(String name, int note, String comment) {
+    public String expressOpinionOnTag(String name, int note, String comment, String username) {
         String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
-                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.include("username", "subject", "name", "notation", "comment", "publishedOn"),
                 Projections.excludeId());
         // Document doc = collection.find((eq("country",
         // nomPays))).projection(projectionFields).first();
@@ -649,6 +653,7 @@ public class RequestManager {
         if (jsonResponse != "404") {
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
+                    .append("username", username)
                     .append("subject", "tag")
                     .append("name", name)
                     .append("notation", note)
@@ -673,7 +678,8 @@ public class RequestManager {
         Date date = new Date();
         String sysdate = s.format(date);
         String url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=" + this.appKEY
-                + "&format=json&album=" + URLEncoder.encode(nameAlbum, StandardCharsets.UTF_8) + "&artist=" + URLEncoder.encode(nameArtist, StandardCharsets.UTF_8);
+                + "&format=json&album=" + URLEncoder.encode(nameAlbum, StandardCharsets.UTF_8) + "&artist="
+                + URLEncoder.encode(nameArtist, StandardCharsets.UTF_8);
         String jsonResponse = request(url);
         if (jsonResponse != "404") {
             InsertOneResult result = collection.insertOne(new Document()
@@ -702,7 +708,8 @@ public class RequestManager {
         Date date = new Date();
         String sysdate = s.format(date);
         String url = "http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=" + this.appKEY
-                + "&format=json&track=" + URLEncoder.encode(nameTrack, StandardCharsets.UTF_8) + "&artist=" + URLEncoder.encode(nameArtist, StandardCharsets.UTF_8);
+                + "&format=json&track=" + URLEncoder.encode(nameTrack, StandardCharsets.UTF_8) + "&artist="
+                + URLEncoder.encode(nameArtist, StandardCharsets.UTF_8);
         String jsonResponse = request(url);
         if (jsonResponse != "404") {
             InsertOneResult result = collection.insertOne(new Document()
@@ -779,7 +786,8 @@ public class RequestManager {
         Document doc = collection.find(eq("name", nomMusique)).projection(projectionFields).first();
         if (doc == null) {
 
-            String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track=" + URLEncoder.encode(nomMusique, StandardCharsets.UTF_8) + "&artist="
+            String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track="
+                    + URLEncoder.encode(nomMusique, StandardCharsets.UTF_8) + "&artist="
                     + URLEncoder.encode(nomArtist, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY + "&format=json";
             String jsonResponse = request(url);
             if (jsonResponse != "erreur") {
