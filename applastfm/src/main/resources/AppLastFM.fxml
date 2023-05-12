@@ -275,7 +275,6 @@
       </CheckBox>
       <Text layoutX="657.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom Track : " />
       <TextField fx:id="nomTCom" layoutX="728.0" layoutY="308.0" prefHeight="25.0" prefWidth="109.0" />
-      <TextField fx:id="NoteCom" layoutX="693.0" layoutY="411.0" prefHeight="25.0" prefWidth="36.0" />
       <Text layoutX="656.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Note : " />
       <TextField fx:id="ContenueCom" layoutX="742.0" layoutY="374.0" prefHeight="73.0" prefWidth="276.0" />
       <Text layoutX="657.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Commentaire : " />
@@ -351,5 +350,16 @@
          </font>
       </Text>
       <Text fx:id="execEnCours" fill="#ee0606" layoutX="34.0" layoutY="397.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attention, cette fonctionnalité peut prendre un certain temps à s'exécuter (&lt;2min)" wrappingWidth="252.44091796875" />
+      <ComboBox fx:id="NoteCom" layoutX="692.0" layoutY="407.0" prefHeight="32.0" prefWidth="43.0" />
+      <Text layoutX="31.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom d'utilisateur : " wrappingWidth="153.44091796875">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <TextField fx:id="nomUtilisateur" layoutX="184.0" layoutY="19.0" prefHeight="30.0" prefWidth="202.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
    </children>
 </AnchorPane>

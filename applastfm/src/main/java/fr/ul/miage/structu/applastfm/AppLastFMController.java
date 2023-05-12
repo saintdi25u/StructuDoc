@@ -68,8 +68,6 @@ public class AppLastFMController {
 	@FXML
 	TextField nomTCom;
 	@FXML
-	TextField NoteCom;
-	@FXML
 	TextField ContenueCom;
 	@FXML
 	TextField nomARCom;
@@ -77,7 +75,8 @@ public class AppLastFMController {
 	TextField nomALCom;
 	@FXML
 	TextField nomTagCom;
-	
+	@FXML
+	TextField nomUtilisateur;
 	@FXML
 	TextField nomTCom1;
 	@FXML
@@ -150,6 +149,8 @@ public class AppLastFMController {
 
 	@FXML
 	ComboBox nomPays;
+	@FXML
+	ComboBox NoteCom;
 
 	// CB principal
 	@FXML
@@ -268,6 +269,10 @@ public class AppLastFMController {
 				"Croatia", "Sudan", "Lebanon", "Uzbekistan", "Panama", "Costa Rica", "Lithuania", "Uruguay", "Slovenia",
 				"Latvia", "Kenya");
 		nomPays.getItems().addAll(nomsPays);
+		
+		List<Integer> note = Arrays.asList(0,1,2,3,4,5);
+		NoteCom.getItems().addAll(note);
+		
 
 	}
 
@@ -636,43 +641,50 @@ public class AppLastFMController {
 							choixType1Com = i;
 						}
 					}
-					if (nbrSelectCom >1) {
-						erreur.setVisible(true);
-						erreur.setText("Veuillez séléctionner le sujet du commentaire");
-
-					}else if(nbrSelectCom == 0) {
-						erreur.setVisible(true);
-						erreur.setText("Veuillez choisir un sujet de commentaire");
+					if(nomUtilisateur.getText().equals("")) {
+						ResCom.setVisible(true);
+						ResCom.setText("Veuillez entrer un nom d'utilisateur");
 					}else {
-						
-						if (choixType1Com == 0) {
-							if (nomARCom.getText()=="") {
-								erreur.setVisible(true);
-								erreur.setText("Veuillez entrer le nom de l'artiste correspondant à cette Track");
-							}else {
-								ResCom.setVisible(true);
-								ResCom.setText(rm.expressOpinionOnTrack(nomTCom.getText(),nomARCom.getText(),Integer.parseInt(NoteCom.getText()), ContenueCom.getText()));
-							}
+						if (nbrSelectCom >1) {
+							erreur.setVisible(true);
+							erreur.setText("Veuillez séléctionner le sujet du commentaire");
+
+						}else if(nbrSelectCom == 0) {
+							erreur.setVisible(true);
+							erreur.setText("Veuillez choisir un sujet de commentaire");
+						}else {
 							
-						}else if (choixType1Com == 1) {
-							ResCom.setVisible(true);
-							ResCom.setText(rm.expressOpinionOnArtist(nomARCom.getText(),Integer.parseInt(NoteCom.getText()), ContenueCom.getText()));
-							 
-						}else if(choixType1Com == 2) {
-							if (nomARCom.getText()=="") {
-								erreur.setVisible(true);
-								erreur.setText("Veuillez entrer le nom de l'artiste correspondant cette album");
-							}else {
+							if (choixType1Com == 0) {
+								if (nomARCom.getText()=="") {
+									erreur.setVisible(true);
+									erreur.setText("Veuillez entrer le nom de l'artiste correspondant à cette Track");
+								}else {
+									ResCom.setVisible(true);
+									ResCom.setText(rm.expressOpinionOnTrack(nomTCom.getText(),nomARCom.getText(),Integer.parseInt(NoteCom.getValue().toString()), ContenueCom.getText(),nomUtilisateur.getText()));
+								}
+								
+							}else if (choixType1Com == 1) {
 								ResCom.setVisible(true);
-								ResCom.setText(rm.expressOpinionOnAlbum(nomALCom.getText(),nomARCom.getText(),Integer.parseInt(NoteCom.getText()), ContenueCom.getText()));
-							}
-						}else if(choixType1Com == 3) {
-							ResCom.setVisible(true);
-							ResCom.setText(rm.expressOpinionOnTag(nomTagCom.getText(),Integer.parseInt(NoteCom.getText()), ContenueCom.getText()));
-						}				
-						typeRequette.setText("BDD");
-						
+								ResCom.setText(rm.expressOpinionOnArtist(nomARCom.getText(),Integer.parseInt(NoteCom.getValue().toString()), ContenueCom.getText(),nomUtilisateur.getText()));
+								 
+							}else if(choixType1Com == 2) {
+								if (nomARCom.getText()=="") {
+									erreur.setVisible(true);
+									erreur.setText("Veuillez entrer le nom de l'artiste correspondant cette album");
+								}else {
+									ResCom.setVisible(true);
+									ResCom.setText(rm.expressOpinionOnAlbum(nomALCom.getText(),nomARCom.getText(),Integer.parseInt(NoteCom.getValue().toString()), ContenueCom.getText(),nomUtilisateur.getText()));
+								}
+							}else if(choixType1Com == 3) {
+								ResCom.setVisible(true);
+								ResCom.setText(rm.expressOpinionOnTag(nomTagCom.getText(),Integer.parseInt(NoteCom.getValue().toString()), ContenueCom.getText(), nomUtilisateur.getText()));
+							}				
+							typeRequette.setText("BDD");
+							
+						}
 					}
+					
+					
 					
 					
 					
@@ -707,19 +719,27 @@ public class AppLastFMController {
 								erreur.setVisible(true);
 								erreur.setText("Veuillez entrer le nom de l'artiste correspondant à cette Track");
 							}else {
-								ArrayList<String> com = rm.getComment("track",nomTCom1.getText());
+								ArrayList<Object> obj = rm.getComment("track",nomTCom1.getText());
+								ArrayList<String> com = (ArrayList<String>) obj.get(0);
+								ArrayList<String> date = (ArrayList<String>) obj.get(1);
+								ArrayList<String> name = (ArrayList<String>) obj.get(2);
+
+						
 								String res = "";
 								for (int i = 0; i < com.size(); i++) {
-									res = res+"Commentaire "+(i+1)+ ":\n" + com.get(i)+"\n";
+									res = res+"Commentaire "+(i+1)+ ":\n" +"Date : "+date.get(i)+"\n"+"User name : "+ name.get(i)+"\n"+ com.get(i)+"\n";
 								}
 								reponseAPI.setText(res);
 							}
 							
 						}else if (choixType1Com1 == 1) {
-							ArrayList<String> com = rm.getComment("artist",nomARCom1.getText());
+							ArrayList<Object> obj = rm.getComment("artist",nomARCom1.getText());
+							ArrayList<String> com = (ArrayList<String>) obj.get(0);
+							ArrayList<String> date = (ArrayList<String>) obj.get(1);
+							ArrayList<String> name = (ArrayList<String>) obj.get(2);
 							String res = "";
 							for (int i = 0; i < com.size(); i++) {
-								res =res+ "Commentaire "+(i+1)+ ":\n" + com.get(i)+"\n";
+								res = res+"Commentaire "+(i+1)+ ":\n" +"Date : "+date.get(i)+"\n"+"User name : "+ name.get(i)+"\n" + com.get(i)+"\n";
 							}
 							reponseAPI.setText(res);
 							 
@@ -728,18 +748,24 @@ public class AppLastFMController {
 								erreur.setVisible(true);
 								erreur.setText("Veuillez entrer le nom de l'artiste correspondant cette album");
 							}else {
-								ArrayList<String> com = rm.getComment("album",nomALCom1.getText());
+								ArrayList<Object> obj = rm.getComment("album",nomALCom1.getText());
+								ArrayList<String> com = (ArrayList<String>) obj.get(0);
+								ArrayList<String> date = (ArrayList<String>) obj.get(1);
+								ArrayList<String> name = (ArrayList<String>) obj.get(2);
 								String res = "";
 								for (int i = 0; i < com.size(); i++) {
-									res =res+ "Commentaire "+(i+1)+ ":\n" + com.get(i)+"\n";
+									res = res+"Commentaire "+(i+1)+ ":\n" +"Date : "+date.get(i)+"\n"+"User name : "+ name.get(i)+"\n"+ com.get(i)+"\n";
 								}
 								reponseAPI.setText(res);
 							}
 						}else if(choixType1Com1 == 3) {
-							ArrayList<String> com = rm.getComment("tag",nomTagCom1.getText());
+							ArrayList<Object> obj = rm.getComment("tag",nomTagCom1.getText());
+							ArrayList<String> com = (ArrayList<String>) obj.get(0);
+							ArrayList<String> date = (ArrayList<String>) obj.get(1);
+							ArrayList<String> name = (ArrayList<String>) obj.get(2);
 							String res = "";
 							for (int i = 0; i < com.size(); i++) {
-								res = res+"Commentaire "+(i+1)+ ":\n" + com.get(i)+"\n";
+								res = res+"Commentaire "+(i+1)+ ":\n" +"Date : "+date.get(i)+ "\n"+"User name : "+ name.get(i)+"\n"+ com.get(i)+"\n";
 							}
 							reponseAPI.setText(res);
 							

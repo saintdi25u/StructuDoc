@@ -759,15 +759,25 @@ public class RequestManager {
         return res;
     }
 
-    public ArrayList<String> getComment(String subject, String name) {
+    public ArrayList<Object> getComment(String subject, String name) {
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
-        ArrayList<String> results = new ArrayList<String>();
+        ArrayList<Object> results = new ArrayList<Object>();
+        ArrayList<String> comments = new ArrayList<String>();
+        ArrayList<String> userName = new ArrayList<String>();
         MongoCursor<Document> cursor = collection.find(and(eq("subject", subject), eq("name", name))).cursor();
+        ArrayList<String> dates = new ArrayList<String>();
         while (cursor.hasNext()) {
             Document doc = cursor.next();
             String comment = doc.getString("comment");
-            results.add(comment);
+            String date = doc.getString("publishedOn");
+            String user = doc.getString("username");
+            userName.add(user);
+            dates.add(date);
+            comments.add(comment);
         }
+        results.add(comments);
+        results.add(dates);
+        results.add(userName);
         return results;
     }
 
