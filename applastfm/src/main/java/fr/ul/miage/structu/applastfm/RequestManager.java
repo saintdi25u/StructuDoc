@@ -667,12 +667,13 @@ public class RequestManager {
         return res;
     }
 
-    public String expressOpinionOnAlbum(String nameAlbum, String nameArtist, int note, String comment) {
+    public String expressOpinionOnAlbum(String nameAlbum, String nameArtist, int note, String comment,
+            String username) {
         String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
-                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.include("username", "subject", "name", "notation", "comment", "publishedOn"),
                 Projections.excludeId());
         SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -684,6 +685,7 @@ public class RequestManager {
         if (jsonResponse != "404") {
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
+                    .append("username", username)
                     .append("subject", "album")
                     .append("name", nameAlbum)
                     .append("notation", note)
@@ -696,13 +698,14 @@ public class RequestManager {
         return res;
     }
 
-    public String expressOpinionOnTrack(String nameTrack, String nameArtist, int note, String comment) {
+    public String expressOpinionOnTrack(String nameTrack, String nameArtist, int note, String comment,
+            String username) {
         String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
 
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
-                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.include("username", "subject", "name", "notation", "comment", "publishedOn"),
                 Projections.excludeId());
         SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -714,6 +717,7 @@ public class RequestManager {
         if (jsonResponse != "404") {
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
+                    .append("username", username)
                     .append("subject", "track")
                     .append("name", nameTrack)
                     .append("notation", note)
@@ -726,12 +730,12 @@ public class RequestManager {
         return res;
     }
 
-    public String expressOpinionOnArtist(String nameArtist, int note, String comment) {
+    public String expressOpinionOnArtist(String nameArtist, int note, String comment, String username) {
         String res = "";
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
         Bson projectionFields = Projections.fields(
                 // subject = style, album, chanson, artist...
-                Projections.include("subject", "name", "notation", "comment", "publishedOn"),
+                Projections.include("username", "subject", "name", "notation", "comment", "publishedOn"),
                 Projections.excludeId());
         SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
@@ -742,6 +746,7 @@ public class RequestManager {
         if (jsonResponse != "404") {
             InsertOneResult result = collection.insertOne(new Document()
                     .append("_id", new ObjectId())
+                    .append("username", username)
                     .append("subject", "artist")
                     .append("name", nameArtist)
                     .append("notation", note)
