@@ -5,8 +5,10 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -14,6 +16,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.client.MongoCollection;
@@ -21,7 +24,9 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 
 public class RequestManager {
     private String appKEY = "dcfdc8018e4fab59a9015539adc6b50e";
@@ -145,8 +150,7 @@ public class RequestManager {
                                 .append("music", nomTitre)
                                 .append("tags", listTags)
                                 .append("duration", duration)
-                                .append("playcount", playcount)
-                                .append("publicationDate", "")); // Cherche a trouvé la date de publication
+                                .append("playcount", playcount));
                         System.out.println("INSERTION");
                         res.add(nomAlbum);
                         res.add(nomArtiste);
@@ -207,7 +211,7 @@ public class RequestManager {
         return result;
     }
 
-    public ArrayList<Object> getInfoArtiste(String nameArtist) {
+    public ArrayList<Object> getInfoArtiste(String nameArtist) throws JSONException, ParseException {
         ArrayList<Object> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_artist");
         Bson projectionFields = Projections.fields(
@@ -259,7 +263,6 @@ public class RequestManager {
             for (int l = 0; l < jsonArrayTracks.length(); l++) {
                 listTracks.add(jsonArrayTracks.getJSONObject(l).getString("name"));
                 getTrack(jsonArrayTracks.getJSONObject(l).getString("name"), nameArtist);
-
             }
 
             Integer playcount = json.getJSONObject("artist").getJSONObject("stats").optInt("playcount", 0);
@@ -506,7 +509,8 @@ public class RequestManager {
 
     // }
 
-    public ArrayList<Object> searchSimilarMusicBetween2Artist(String nameArtist1, String nameArtist2) {
+    public ArrayList<Object> searchSimilarMusicBetween2Artist(String nameArtist1, String nameArtist2)
+            throws ParseException {
         /**
          * ALGO EN GROS
          * // On recherche si les artistes existe dans la base de données (collection
@@ -754,34 +758,24 @@ public class RequestManager {
                     .append("publishedOn", sysdate));
             res = "Commentaire enregistré";
         } else {
-            res = "Erreur d'insertion du commentaire";
+            res = "Erre ur d'insertion du commentaire";
         }
         return res;
     }
 
-    public ArrayList<Object> getComment(String subject, String name) {
+    public ArrayList<String> getComment(String subject, String name) {
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_opinion");
-        ArrayList<Object> results = new ArrayList<Object>();
-        ArrayList<String> comments = new ArrayList<String>();
-        ArrayList<String> userName = new ArrayList<String>();
+        ArrayList<String> results = new ArrayList<String>();
         MongoCursor<Document> cursor = collection.find(and(eq("subject", subject), eq("name", name))).cursor();
-        ArrayList<String> dates = new ArrayList<String>();
         while (cursor.hasNext()) {
             Document doc = cursor.next();
             String comment = doc.getString("comment");
-            String date = doc.getString("publishedOn");
-            String user = doc.getString("username");
-            userName.add(user);
-            dates.add(date);
-            comments.add(comment);
+            results.add(comment);
         }
-        results.add(comments);
-        results.add(dates);
-        results.add(userName);
         return results;
     }
 
-    public ArrayList<Object> getTrack(String nomMusique, String nomArtist) {
+    public ArrayList<Object> getTrack(String nomMusique, String nomArtist) throws ParseException {
         ArrayList<Object> res = new ArrayList<>();
 
         MongoCollection<Document> collection = null;
@@ -789,18 +783,19 @@ public class RequestManager {
         // MongoCollection<Document> collection = database.getCollection("test");
         Boolean collectionExists = database.listCollectionNames().into(new ArrayList<String>())
                 .contains("GCSTM_Tracks");
-
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date currentDate = new Date();
+        String sysdate = s.format(currentDate);
         if (!collectionExists) {
             System.out.println("La collection n'existe pas");
             database.createCollection("GCSTM_Tracks");
         }
         collection = database.getCollection("GCSTM_Tracks");
         Bson projectionFields = Projections.fields(
-                Projections.include("name", "artist", "listeners", "playcount", "tag"),
+                Projections.include("name", "artist", "listeners", "playcount", "tag", "dateCollectionInfo"),
                 Projections.excludeId());
         Document doc = collection.find(eq("name", nomMusique)).projection(projectionFields).first();
         if (doc == null) {
-
             String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track="
                     + URLEncoder.encode(nomMusique, StandardCharsets.UTF_8) + "&artist="
                     + URLEncoder.encode(nomArtist, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY + "&format=json";
@@ -813,38 +808,55 @@ public class RequestManager {
                 String artist = jsobj.getJSONObject("artist").getString("name");
                 Integer listeners = jsobj.optInt("listeners", 0);
                 Integer playcount = jsobj.optInt("playcount", 0);
-
                 ArrayList<String> tags = new ArrayList<String>();
                 JSONArray jsonArray = json.getJSONObject("track").getJSONObject("toptags").getJSONArray("tag");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     tags.add(jsonArray.getJSONObject(i).getString("name"));
                 }
-
-                // url =
-                // "http://ws.audioscrobbler.com/2.0/?method=track.getTags&track="+nomMusique+"&artist="+nomArtist+"&api_key="
-                // + this.appKEY+"&format=json";
-                // jsonResponse = request(url);
-
                 InsertOneResult result = collection.insertOne(new Document()
                         .append("_id", new ObjectId())
                         .append("name", name)
                         .append("artist", artist)
                         .append("listeners", listeners)
                         .append("playcount", playcount)
-                        .append("tag", tags));
+                        .append("tag", tags)
+                        .append("dateCollectionInfo", sysdate));
                 System.out.println("Insertion successful");
                 res.add(name);
                 res.add(artist);
                 res.add(listeners);
                 res.add(playcount);
                 res.add(tags);
+                res.add(sysdate);
                 res.add("API");
             }
         } else {
+            Date date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((String) doc.get("dateCollectionInfo"));
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.HOUR, 72);
+            date = c.getTime();
+            if (date.before(currentDate)) {
+                String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track="
+                        + URLEncoder.encode(nomMusique, StandardCharsets.UTF_8) + "&artist="
+                        + URLEncoder.encode(nomArtist, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY
+                        + "&format=json";
+                String jsonResponse = request(url);
+                JSONObject json = new JSONObject(jsonResponse);
+                JSONObject jsobj = json.getJSONObject("track");
+                Integer listeners = jsobj.optInt("listeners", 0);
+                Integer playcount = jsobj.optInt("playcount", 0);
+                UpdateResult updateQueryResult = collection.updateOne(Filters.eq("name", doc.get("name")),
+                        Updates.combine(Updates.set("listeners", listeners),
+                                Updates.set("playcount", playcount), Updates.set("dateCollectionInfo", sysdate)));
+                System.out.println("Update sucessfully");
+
+            }
             res.add((String) doc.get("name"));
             res.add((String) doc.get("artist"));
             res.add((Integer) doc.get("listeners"));
             res.add((Integer) doc.get("playcount"));
+            res.add((String) doc.get("dateCollectionInfo"));
             res.add((ArrayList<String>) doc.get("tag"));
             res.add("BDD");
 
