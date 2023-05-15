@@ -33,25 +33,53 @@ Mais, dès lors que les données sont deja présentes au sein de la base de donn
 Voici les étapes à suivre pour installer l'application sur votre ordinateur :
 
 * Récupérez le dossier compressé nommé "APP_LastFM_Manuelli_Saint-Dizier" et placez-le à l'endroit souhaité sur votre ordinateur. Par défaut, placez-le sur le "Bureau".
+
 * Décompressez le dossier en effectuant les actions suivantes : clic droit -> Extraire tout -> Extraire.
+
 * Ouvrez le dossier décompressé "APP_LastFM_Manuelli_Saint-Dizier". 
+
 * Allez dans le dossier "bindist" puis "bin".
+
 * Cliquez sur la barre de navigation et tapez le mot "cmd". Voici un exemple :
+
 ![[2.1Installation1.png]]
 
 
 ![[2.1Installation2.png]]
 
 * Une fois l'invite de commandes ouverte, tapez la commande "applastfm" puis appuyez sur "Entrée". Voici un exemple :
+
 ![[2.1Installation3.png]]
 Une fois ces étapes réalisées, l'application s'ouvre, vous n'avez plus qu'à l'utiliser.
+
 ### 2.2 - Choix IHM
 L'objectif de ce projet était de réaliser une application en java permettant de collecter des données concernant le milieu musicale afin d'incrémenter une base de données mangoDB et de les communiquer à l'utilisateur. 
+
 Pour réaliser cette application nous avons donc décider de réaliser une interface graphique permettant ainsi de faciliter et améliorer l'experience utilisateur. 
+
 Voici un apercu de l'interface homme machine :
 
 ![[2.2Choix1.png]]
 
-Sur cette interface vous pouvez observer plusieurs fonctionalitées mises à disposition de l'utilisateur. Nous avons décidé de placer chaques fonctionnalitée dans une case permettant ainsi à l'utilisateur de bien disocier chaqu'une d'entre elles. 
-Comme vous pouvez le constater
+Nous pouvons obeserver dans un premier temps qu'une information importante est renseigné en haut à droite de l'interface. Cette information est le type de requettage. 
+Si la requette est faite sur l'API LastFM alors cette partie s'affichera comme suit  :
+														![[2.2Choix2.png]]
+En revanche, si la requette est faite sur la base de données mangoDB alors cette partie s'affichera de la manière suivante : 
+														![[2.2Choix3.png]]
 
+Sur cette interface vous pouvez observer plusieurs fonctionalitées mises à disposition de l'utilisateur. Nous avons décidé de placer chaques fonctionnalitée dans une case permettant ainsi à l'utilisateur de bien disocier chaqu'une d'entre elles. 
+
+Comme vous pouvez le constater l'interface peut se découper en deux parties : 
+
+* La première permet de choisir quelle fonctionnalitée l'utilisateur veut utiliser ainsi que renseigner les informations associé. 
+* La seconde partie de l'interface sert à afficher les résultats. 
+
+Selon la fonctionnalitée choisie par l'utilisateur, les résultats ne seront pas affichés de la même façon. Pour valider son choix, l'utilisateur doit appuyer sur le boutton "Valider" en bas de l'interface.
+
+Dans la suite de cette partie nous alons detailer comment fonctionne l'interface pour chaques fonctionnalitées.
+
+### 2.2.1 - Information sur un tag : 
+
+															![[2.2.1InfoTag1.png]]
+Dans cette partie l'utilisateur souhaite connaitre des informations sur un style musicale. La première chose qu'il doit faire c'est de renseigner le nom du style. Par la suite il doit choisir entrre avoir le résumé ou l'ensemble du contenue concernant ce style. Par defaut s'il ne coche rien, l'application lui affichera les deux. Voici comment l'application affiche le résulatat de cette fonctionnalité : 
+![[2.2.1InfoTag2.png]]
