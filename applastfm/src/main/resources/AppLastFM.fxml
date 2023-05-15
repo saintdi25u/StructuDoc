@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="838.0" prefWidth="1368.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structu.applastfm.AppLastFMController">
+<AnchorPane prefHeight="818.0" prefWidth="1364.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structu.applastfm.AppLastFMController">
    <children>
       <Text fill="#0c1eed" layoutX="614.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AppLastFM">
          <font>
@@ -356,12 +356,12 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Text layoutX="24.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dernière mise à jours : ">
+      <Text layoutX="20.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date de dernère mise à jour : ">
          <font>
             <Font size="14.0" />
          </font>
       </Text>
-      <Text fx:id="dateLastMaj" fill="#f40606" layoutX="165.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="187.99999084472654">
+      <Text fx:id="dateLastMaj" fill="#f20606" layoutX="203.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="193.5999999999999">
          <font>
             <Font size="14.0" />
          </font>
