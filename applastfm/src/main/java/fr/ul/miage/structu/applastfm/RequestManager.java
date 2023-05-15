@@ -235,7 +235,7 @@ public class RequestManager {
             } else
                 res.add("BDD");
             res.add((Integer) doc.get("playcount"));
-            res.add(sysdate);
+            res.add((String) sysdate);
         }
         // Met dans la liste nomTitre le titre de chaques musique de l'album et
         // l'affiche
@@ -342,7 +342,7 @@ public class RequestManager {
             res.add(listSimilarArtist);
             res.add(playcount);
             res.add("API");
-            res.add(sysdate);
+            res.add((String) sysdate);
         } else {
             Date date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((String) doc.get("dateCollectionInfo"));
             Calendar c = Calendar.getInstance();
@@ -374,7 +374,7 @@ public class RequestManager {
                 res.add("API");
             } else
                 res.add("BDD");
-            res.add(sysdate);
+            res.add((String) sysdate);
         }
         return res;
     }
@@ -829,9 +829,9 @@ public class RequestManager {
                 res.add(artist);
                 res.add(listeners);
                 res.add(playcount);
-                res.add(tags);
-                res.add(sysdate);
+                res.add(tags);          
                 res.add("API");
+                res.add(sysdate);
             }
         } else {
             Date date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((String) doc.get("dateCollectionInfo"));
@@ -841,6 +841,7 @@ public class RequestManager {
             date = c.getTime();
             boolean maj = false;
             if (date.before(currentDate)) {
+            	ObjectId objId = new ObjectId(doc.get("_id").toString());
                 String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track="
                         + URLEncoder.encode(nomMusique, StandardCharsets.UTF_8) + "&artist="
                         + URLEncoder.encode(nomArtist, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY
@@ -850,7 +851,7 @@ public class RequestManager {
                 JSONObject jsobj = json.getJSONObject("track");
                 Integer listeners = jsobj.optInt("listeners", 0);
                 Integer playcount = jsobj.optInt("playcount", 0);
-                UpdateResult updateQueryResult = collection.updateOne(Filters.eq("name", doc.get("name")),
+                UpdateResult updateQueryResult = collection.updateOne(Filters.eq("_id", objId),
                         Updates.combine(Updates.set("listeners", listeners),
                                 Updates.set("playcount", playcount), Updates.set("dateCollectionInfo", sysdate)));
                 System.out.println("Update sucessfully");
@@ -860,12 +861,12 @@ public class RequestManager {
             res.add((String) doc.get("artist"));
             res.add((Integer) doc.get("listeners"));
             res.add((Integer) doc.get("playcount"));
-            res.add((String) doc.get("dateCollectionInfo"));
             res.add((ArrayList<String>) doc.get("tag"));
             if (maj == true) {
                 res.add("API");
             } else
                 res.add("BDD");
+            res.add((String) doc.get("dateCollectionInfo"));
 
         }
         return res;

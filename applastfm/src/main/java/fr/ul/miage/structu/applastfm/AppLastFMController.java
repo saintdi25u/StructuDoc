@@ -395,7 +395,8 @@ public class AppLastFMController {
 					 for (int i = 0; i < nameTracks.size(); i++) {
 					 affichage = affichage + nameTracks.get(i) + "\n";
 					 }
-
+					 dateLastMaj.setVisible(true);
+					 dateLastMaj.setText((String) nameTracks.get(8));
 					 reponseAPI.setText(affichage);
 
 					break;
@@ -462,7 +463,8 @@ public class AppLastFMController {
 					HBSimilar.setText(affichagesSim);	 
 					playcountA1.setText(""+(Integer) resRequest3.get(5));
 					 
-					 
+					dateLastMaj.setVisible(true);
+					dateLastMaj.setText((String) resRequest3.get(7));
 					
 					
 					
@@ -559,7 +561,9 @@ public class AppLastFMController {
 						}
 					}else contenue = "Aucun Tag référencé pour ce Track";
 					Tag1.setText( contenue);
-
+					
+					dateLastMaj.setVisible(true);
+					dateLastMaj.setText((String) resRequest5.get(6));
 					
 					break;
 				case 5:

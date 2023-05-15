@@ -206,7 +206,7 @@
             <Font size="27.0" />
          </font>
       </Text>
-      <CheckBox fx:id="choixTracks" layoutX="669.0" layoutY="99.0" mnemonicParsing="false" text="Infomration sur un Track">
+      <CheckBox fx:id="choixTracks" layoutX="669.0" layoutY="99.0" mnemonicParsing="false" text="Information sur un Track">
          <font>
             <Font size="19.0" />
          </font>
