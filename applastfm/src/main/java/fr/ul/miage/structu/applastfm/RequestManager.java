@@ -235,7 +235,7 @@ public class RequestManager {
             } else
                 res.add("BDD");
             res.add((Integer) doc.get("playcount"));
-            res.add((String) sysdate);
+            res.add((String) doc.get("dateCollectionInfo"));
         }
         // Met dans la liste nomTitre le titre de chaques musique de l'album et
         // l'affiche

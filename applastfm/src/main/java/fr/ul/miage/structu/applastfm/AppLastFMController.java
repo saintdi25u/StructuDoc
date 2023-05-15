@@ -396,7 +396,7 @@ public class AppLastFMController {
 					 affichage = affichage + nameTracks.get(i) + "\n";
 					 }
 					 dateLastMaj.setVisible(true);
-					 dateLastMaj.setText((String) nameTracks.get(8));
+					 dateLastMaj.setText((String) resRequest2.get(8));
 					 reponseAPI.setText(affichage);
 
 					break;
