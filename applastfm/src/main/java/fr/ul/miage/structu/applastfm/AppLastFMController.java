@@ -93,6 +93,8 @@ public class AppLastFMController {
 	@FXML
 	Text erreur;
 	@FXML
+	Text dateLastMaj;
+	@FXML
 	Text execEnCours;
 	@FXML
 	Text TagSelectNom;
@@ -226,6 +228,7 @@ public class AppLastFMController {
 
 	@FXML
 	public void initialize() {
+		dateLastMaj.setVisible(false);
 		execEnCours.setVisible(true);
 		ResCom.setVisible(false);
 		typeRequette.setVisible(false);
@@ -278,6 +281,7 @@ public class AppLastFMController {
 
 	@FXML
 	private void ReponseRequette() throws Exception {
+		dateLastMaj.setVisible(false);
 		HboxSimilar.setVisible(false);
 		ResCom.setVisible(false);
 		typeRequette.setVisible(true);
@@ -352,12 +356,15 @@ public class AppLastFMController {
 					typeRequette.setText(resRequet.get(3));
 					TagSelectNom1.setText(resRequet.get(0));
 					 if (choixResumTag.isSelected() && !choixInteTag.isSelected()) {
-					 reponseAPI.setText("Résumé : \n\n"+resRequet.get(1));
+					 reponseAPI.setText("Nombre de son qui contiennent ce tag : "+resRequet.get(4)+"\n"+ "Résumé : \n\n"+resRequet.get(1));
 					 } else if (choixInteTag.isSelected() && !choixResumTag.isSelected()) {			 
-					 reponseAPI.setText("Contenue : \n\n" +resRequet.get(2));
+					 reponseAPI.setText("Nombre de son qui contiennent ce tag : "+resRequet.get(4)+"\n"+"Contenue : \n\n" +resRequet.get(2));
 					 } else {
-					 reponseAPI.setText("Résumé : \n\n"+resRequet.get(1) + "\n\n\n"+"Contenue : \n\n" + resRequet.get(2));
+					 reponseAPI.setText("Nombre de son qui contiennent ce tag : "+resRequet.get(4)+"\n"+"Résumé : \n\n"+resRequet.get(1) + "\n\n\n"+"Contenue : \n\n" + resRequet.get(2));
 					 }
+					dateLastMaj.setVisible(true);
+					dateLastMaj.setText(resRequet.get(5));
+
 
 					break;
 				case 1:

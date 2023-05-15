@@ -120,7 +120,7 @@ public class RequestManager {
                 res.add("API");
             } else res.add("BDD");
             
-            res.add((String) doc.get("reach"));
+            res.add(String.valueOf((Integer) doc.get("reach")));
             res.add((String) doc.get("dateCollectionInfo"));   
         }
         return res;
