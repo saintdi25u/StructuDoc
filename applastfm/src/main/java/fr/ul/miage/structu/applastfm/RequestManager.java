@@ -849,6 +849,7 @@ public class RequestManager {
             c.setTime(date);
             c.add(Calendar.HOUR, 72);
             date = c.getTime();
+            boolean maj = false;
             if (date.before(currentDate)) {
                 String url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&track="
                         + URLEncoder.encode(nomMusique, StandardCharsets.UTF_8) + "&artist="
@@ -863,7 +864,7 @@ public class RequestManager {
                         Updates.combine(Updates.set("listeners", listeners),
                                 Updates.set("playcount", playcount), Updates.set("dateCollectionInfo", sysdate)));
                 System.out.println("Update sucessfully");
-
+                maj = true;
             }
             res.add((String) doc.get("name"));
             res.add((String) doc.get("artist"));
@@ -871,7 +872,10 @@ public class RequestManager {
             res.add((Integer) doc.get("playcount"));
             res.add((String) doc.get("dateCollectionInfo"));
             res.add((ArrayList<String>) doc.get("tag"));
-            res.add("BDD");
+            if (maj == true) {
+            	res.add("API");
+			}else res.add("BDD");
+            
 
         }
         return res;
