@@ -115,12 +115,13 @@ public class RequestManager {
             // System.out.println(doc.get("name"));
             res.add((String) doc.get("name"));
             res.add((String) doc.get("summary"));
-            res.add((String) doc.get("content"));
-            res.add((String) doc.get("reach"));
+            res.add((String) doc.get("content"));        
             if (maj == true) {
                 res.add("API");
-            } else
-                res.add("BDD");
+            } else res.add("BDD");
+            
+            res.add((String) doc.get("reach"));
+            res.add((String) doc.get("dateCollectionInfo"));   
         }
         return res;
     }
