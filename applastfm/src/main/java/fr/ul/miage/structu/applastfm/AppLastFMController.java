@@ -737,6 +737,7 @@ public class AppLastFMController {
 							ArrayList<String> com = (ArrayList<String>) obj.get(0);
 							ArrayList<String> date = (ArrayList<String>) obj.get(1);
 							ArrayList<String> name = (ArrayList<String>) obj.get(2);
+						
 							String res = "";
 							for (int i = 0; i < com.size(); i++) {
 								res = res+"Commentaire "+(i+1)+ ":\n" +"Date : "+date.get(i)+"\n"+"User name : "+ name.get(i)+"\n" + com.get(i)+"\n";
