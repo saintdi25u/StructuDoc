@@ -30,8 +30,28 @@ Mais, dès lors que les données sont deja présentes au sein de la base de donn
 ## 2 - Interface homme-machine
 
 ### 2.1 - Installation
+Voici les étapes à suivre pour installer l'application sur votre ordinateur :
+
+* Récupérez le dossier compressé nommé "APP_LastFM_Manuelli_Saint-Dizier" et placez-le à l'endroit souhaité sur votre ordinateur. Par défaut, placez-le sur le "Bureau".
+* Décompressez le dossier en effectuant les actions suivantes : clic droit -> Extraire tout -> Extraire.
+* Ouvrez le dossier décompressé "APP_LastFM_Manuelli_Saint-Dizier". 
+* Allez dans le dossier "bindist" puis "bin".
+* Cliquez sur la barre de navigation et tapez le mot "cmd". Voici un exemple :
+![[2.1Installation1.png]]
 
 
-### 2.2 - Explication
+![[2.1Installation2.png]]
 
+* Une fois l'invite de commandes ouverte, tapez la commande "applastfm" puis appuyez sur "Entrée". Voici un exemple :
+![[2.1Installation3.png]]
+Une fois ces étapes réalisées, l'application s'ouvre, vous n'avez plus qu'à l'utiliser.
+### 2.2 - Choix IHM
+L'objectif de ce projet était de réaliser une application en java permettant de collecter des données concernant le milieu musicale afin d'incrémenter une base de données mangoDB et de les communiquer à l'utilisateur. 
+Pour réaliser cette application nous avons donc décider de réaliser une interface graphique permettant ainsi de faciliter et améliorer l'experience utilisateur. 
+Voici un apercu de l'interface homme machine :
+
+![[2.2Choix1.png]]
+
+Sur cette interface vous pouvez observer plusieurs fonctionalitées mises à disposition de l'utilisateur. Nous avons décidé de placer chaques fonctionnalitée dans une case permettant ainsi à l'utilisateur de bien disocier chaqu'une d'entre elles. 
+Comme vous pouvez le constater
 

@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 296.5
   },
   "right": {
     "id": "9d1e01d5fcb16e10",
@@ -146,10 +146,16 @@
       "command-palette:Ouvrir la palette de commandes": false
     }
   },
-  "active": "04f11b66ca882a11",
+  "active": "a2d5d2747b081cf6",
   "lastOpenFiles": [
-    "assets/1.png.md",
+    "assets/2.2Choix1.png",
     "Rapport Projet Structuration de Documents.md",
+    "Pasted image 20230515090942.png.md",
+    "assets/Pasted image 20230515090942.png",
+    "assets/2.1Installation3.png",
+    "assets/2.1Installation1.png",
+    "assets/2.1Installation2.png",
+    "assets/1.png.md",
     "assets"
   ]
 }
