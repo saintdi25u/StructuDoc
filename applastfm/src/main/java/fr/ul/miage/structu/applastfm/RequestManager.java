@@ -53,10 +53,14 @@ public class RequestManager {
     }
 
     // Information sur un style musical
-    public ArrayList<String> getTagMusicInfo(String tag) {
+    public ArrayList<String> getTagMusicInfo(String tag) throws ParseException {
         ArrayList<String> res = new ArrayList<>();
         MongoCollection<Document> collection = connectAndTestIfCollectionExist("GCSTM_tag");
-        Bson projectionFields = Projections.fields(Projections.include("name", "summary", "content"),
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date currentDate = new Date();
+        String sysdate = s.format(currentDate);
+        Bson projectionFields = Projections.fields(
+                Projections.include("name", "summary", "content", "reach", "dateCollectionInfo"),
                 Projections.excludeId());
         Document doc = collection.find(eq("name", tag)).projection(projectionFields).first();
         if (doc == null) {
@@ -66,6 +70,7 @@ public class RequestManager {
             String jsonResponse = request(url);
 
             JSONObject json = new JSONObject(jsonResponse);
+            int reach = json.getJSONObject("tag").getInt("reach");
             JSONObject jsonObj = json.getJSONObject("tag").getJSONObject("wiki");
             // String summary = "Résumé : \n";
             String summary = jsonObj.getString("summary");
@@ -76,18 +81,46 @@ public class RequestManager {
                     .append("_id", new ObjectId())
                     .append("name", tag)
                     .append("summary", summary)
+                    .append("reach", reach)
+                    .append("dateCollectionInfo", sysdate)
                     .append("content", content));
             System.out.println("Insertion successful");
             res.add(tag);
             res.add(summary);
             res.add(content);
             res.add("API");
+            res.add(String.valueOf(reach));
+            res.add(sysdate);
         } else {
+            Date date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse((String) doc.get("dateCollectionInfo"));
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.HOUR, 72);
+            date = c.getTime();
+            boolean maj = false;
+            if (date.before(currentDate)) {
+                String url = " http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag="
+                        + URLEncoder.encode(tag, StandardCharsets.UTF_8) + "&api_key=" + this.appKEY
+                        + "&format=json";
+                String jsonResponse = request(url);
+
+                JSONObject json = new JSONObject(jsonResponse);
+                int reach = json.getJSONObject("tag").getInt("reach");
+                UpdateResult updateQueryResult = collection.updateOne(Filters.eq("name", doc.get("name")),
+                        Updates.combine(Updates.set("reach", reach),
+                                Updates.set("dateCollectionInfo", sysdate)));
+                System.out.println("Update sucessfully");
+                maj = true;
+            }
             // System.out.println(doc.get("name"));
             res.add((String) doc.get("name"));
             res.add((String) doc.get("summary"));
             res.add((String) doc.get("content"));
-            res.add("BDD");
+            res.add((String) doc.get("reach"));
+            if (maj == true) {
+                res.add("API");
+            } else
+                res.add("BDD");
         }
         return res;
     }
@@ -778,9 +811,9 @@ public class RequestManager {
             dates.add(date);
             String nameAuthor = doc.getString("username");
             names.add(nameAuthor);
-            
+
         }
-        
+
         results.add(comments);
         results.add(dates);
         results.add(names);
@@ -873,9 +906,9 @@ public class RequestManager {
             res.add((String) doc.get("dateCollectionInfo"));
             res.add((ArrayList<String>) doc.get("tag"));
             if (maj == true) {
-            	res.add("API");
-			}else res.add("BDD");
-            
+                res.add("API");
+            } else
+                res.add("BDD");
 
         }
         return res;
