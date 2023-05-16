@@ -1,4 +1,4 @@
-# Collecte de statistiques et de recommandation de musique
+	# Collecte de statistiques et de recommandation de musique
 
 Ce projet a été réalisé par MANUELLI Théo et SAINT-DIZIER Corentin.
 
@@ -80,6 +80,44 @@ Dans la suite de cette partie nous alons detailer comment fonctionne l'interface
 
 ### 2.2.1 - Information sur un tag : 
 
-															![[2.2.1InfoTag1.png]]
+												![[2.2.1InfoTag1.png]]
 Dans cette partie l'utilisateur souhaite connaitre des informations sur un style musicale. La première chose qu'il doit faire c'est de renseigner le nom du style. Par la suite il doit choisir entrre avoir le résumé ou l'ensemble du contenue concernant ce style. Par defaut s'il ne coche rien, l'application lui affichera les deux. Voici comment l'application affiche le résulatat de cette fonctionnalité : 
 ![[2.2.1InfoTag2.png]]
+On peut constater qu'une information sur la date du dernier enregistrement dans la base de données est aussi renseigné. 
+
+### 2.2.2 - Information sur un album : 
+
+											![[2.2.2InfoAlbum1.png]]
+
+Dans cette partie l'utilisateur souhaite avoir des informations sur un album. Pour cela il doit renseigner le nom de l'album ainsi que le nom de l'artiste. Une fois ses choix fait il appuyer sur le boutton "Valider". Le resultat est le suivant : 
+![[2.2.2InfoAlbum2.png]]
+On peut observer que les informations renseigné à l'utilisateur sont donc le nom de l'album, le nom de l'artiste, la date de derniere modification dans la base de données, le nombre de morceaux contenue dans l'album, sa durée totale en seconde, son nombre d'écoute et pour finir la liste des musique qui composent l'album. 
+
+### 2.2.3 - Information sur une musique  : 
+
+									![[2.2.3InfoTrack1.png]]
+Ici l'utilisateur souhaite connaitre des informations sur une musique. Pour cela il doit donc renseigner le nom de la musique et le nom de l'artiste. Dans cette exemple nous prendrons donc le titre "Holiday" du groupe Green Day.
+Le résultat retourné par l'application est le suivant :
+![[2.2.3InfoTrack2.png]]
+Les informations affichées à l'utilisateur sont donc les nom de l'artiste, le nom de la musique, le nombre d'écoute, le nombre d'utilisateur écoutant la musique, la date de dernière modification en base et pour finir la liste des styles musicaux auquelle appartient la musique. 
+
+### 2.2.4 - Information sur les TOPs 10  : 
+Cette fonctionnalitée permets de donner des renseignements sur les différents TOPs 10. L'utiilisateur à plusieur possibilitées : 
+* Avoir les informations sur les TOPs 10 global, c'est à dire TOPS 10 monde. 
+* Avoir les informations sur les TOPs 10 spécifiquement par pays. 
+
+Pour le premier choix, l'utilisateur doit simplement coché la case attribué :
+
+									![[2.2.4InfoTop1.png]]
+
+Pour le second choix, l'utilisateur peut choisir le nom du pay dans la liste déroulante comme ceci : 
+										![[2.2.4InfoTop2.png]]
+
+Une fois cette partie renseigner, l'utilisateur valide ses choix et l'application retourne : 
+* Pour le TOP 10 globale : 
+![[2.2.4InfoTOP3.png]]
+* Pour le TOP 10 par pay avec l'exemple des Etats Unis :
+ ![[2.2.4InfoTOP4.png]]
+L'utilisateur à donc accès au top 10 des musiques, des styles musicaux et des artistes ainsi que la date de requettage. 
+
+### 2.2.4 - Information sur les musiques et albums similaires  : 

@@ -525,8 +525,6 @@ public class AppLastFMController {
 					if (choixtop == "global") {
 						info = "Top global : \n\n";
 					}else info = "Top " +nomPays.getValue().toString() + " : \n\n ";
-					info = info +"Playcount : " + (Integer) resRequest4.get(4)+"\n";
-					info = info +"Listners : " + (Integer) resRequest4.get(5)+"\n";
 					info = info +"Date : " + (String) resRequest4.get(6)+"\n";
 					infoTop10.setText(info);
 					
