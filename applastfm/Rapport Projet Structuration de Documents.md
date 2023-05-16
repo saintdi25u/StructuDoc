@@ -143,9 +143,27 @@ On peut constater que les informations renseigner sur l'application sont donc :
 * la date de la dernière mise a jours de ces informations dans la base de données
 
 ### 2.2.7 - Information sur un nombre d'écoute : 
-
+Cette fonctionnalitée permet à l'utilisateur de récupérer des informations sur un Artiste, un album oui une musique, dont le nombre d'écoute est soupérieur ou inférieur à un certain seuil. Pour ce faire l'utilisateur doit renseigner succésivement ce qu'il veut. Voici quelques exemples d'utilisation : 
+*  L'utilisateur souhaite avoir des informaiton sur une musique dont le nombre d'écoute est supérieur à 500 alors il renseignera les informations suivante : 
 ![[2.2.7InfoSeuil1.png]]
-
+* L'utilisateur souhaite avoir des informations sur un artiste dont le nombre d'écoute est inférieur à 300 alors il renseignera les informations suivante : 
 ![[2.2.7InfoSeuil2.png]]
-
+* L'utilisarteur souhaite avoir les informations sur un album dont le nombre d'écoute est supérieur à 400 alors il renseignera les informations suivantes : 
 ![[2.2.7InfoSeuil3.png]]
+Une fois que l'utilisateur a fait ses choix, voici le résultat de l'application : 
+
+![[2.2.7InfoSeuil4.png]]
+L'application affiche donc, dans le cas du première exemple, l'enssemble des musiques dont le nombre d'écoute est supérieur à 500. 
+Les résultat pour les autres exemple seront sous la même forme. 
+
+
+### 2.2.8 - Publier un commentaire : 
+Cette fonctionnalitée permet à l'utilisateur de publier des commentaires sur des musiques, des albums, des styles musicaux et des artistes. 
+#### 2.2.8.1 - Publier un commentaire sur une musique : 
+![[2.2.8.1ComMusique1.png]]
+#### 2.2.8.2 - Publier un commentaire sur un album : 
+![[2.2.8.2ComAlbum1.png]]
+#### 2.2.8.3 - Publier un commentaire sur un style musical : 
+![[2.2.8.3ComTag.png]]
+#### 2.2.8.4 - Publier un commentaire sur un artiste : 
+![[2.2.8.4ComArtiste.png]]
