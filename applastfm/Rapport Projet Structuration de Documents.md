@@ -53,138 +53,168 @@ Voici les étapes à suivre pour installer l'application sur votre ordinateur :
 Une fois ces étapes réalisées, l'application s'ouvre, vous n'avez plus qu'à l'utiliser.
 
 ### 2.2 - Choix IHM
-L'objectif de ce projet était de réaliser une application en java permettant de collecter des données concernant le milieu musicale afin d'incrémenter une base de données mangoDB et de les communiquer à l'utilisateur. 
+L'objectif de ce projet était de réaliser une application en Java permettant de collecter des données concernant le milieu musical afin d'incrémenter une base de données MongoDB et de les communiquer à l'utilisateur.
 
-Pour réaliser cette application nous avons donc décider de réaliser une interface graphique permettant ainsi de faciliter et améliorer l'experience utilisateur. 
+Pour réaliser cette application, nous avons donc décidé de réaliser une interface graphique permettant ainsi de faciliter et améliorer l'expérience utilisateur.
 
-Voici un apercu de l'interface homme machine :
+Voici un aperçu de l'interface homme-machine :
 
 ![[2.2Choix1.png]]
 
-Nous pouvons obeserver dans un premier temps qu'une information importante est renseigné en haut à droite de l'interface. Cette information est le type de requettage. 
-Si la requette est faite sur l'API LastFM alors cette partie s'affichera comme suit  :	![[2.2Choix2.png]]
-En revanche, si la requette est faite sur la base de données mangoDB alors cette partie s'affichera de la manière suivante : 
+Nous pouvons observer dans un premier temps qu'une information importante est renseignée en haut à droite de l'interface. Cette information est le type de requêtage.
+
+Si la requête est faite sur l'API LastFM, alors cette partie s'affichera comme suit:	![[2.2Choix2.png]]
+En revanche, si la requête est faite sur la base de données MongoDB, alors cette partie s'affichera de la manière suivante:
 ![[2.2Choix3.png]]
 
-Sur cette interface vous pouvez observer plusieurs fonctionalitées mises à disposition de l'utilisateur. Nous avons décidé de placer chaques fonctionnalitée dans une case permettant ainsi à l'utilisateur de bien disocier chaqu'une d'entre elles. 
+Sur cette interface, vous pouvez observer plusieurs fonctionnalités mises à disposition de l'utilisateur. Nous avons décidé de placer chaque fonctionnalité dans une case, permettant ainsi à l'utilisateur de bien distinguer chacune d'entre elles.
 
-Comme vous pouvez le constater l'interface peut se découper en deux parties : 
+Comme vous pouvez le constater, l'interface peut se découper en deux parties :
 
-* La première permet de choisir quelle fonctionnalitée l'utilisateur veut utiliser ainsi que renseigner les informations associé. 
-* La seconde partie de l'interface sert à afficher les résultats. 
+-   La première permet de choisir quelle fonctionnalité l'utilisateur veut utiliser, ainsi que de renseigner les informations associées.
+-   La seconde partie de l'interface sert à afficher les résultats.
 
-Selon la fonctionnalitée choisie par l'utilisateur, les résultats ne seront pas affichés de la même façon. Pour valider son choix, l'utilisateur doit appuyer sur le boutton "Valider" en bas de l'interface.
+Selon la fonctionnalité choisie par l'utilisateur, les résultats ne seront pas affichés de la même façon. Pour valider son choix, l'utilisateur doit appuyer sur le bouton "Valider" en bas de l'interface.
 
-Dans la suite de cette partie nous alons detailer comment fonctionne l'interface pour chaques fonctionnalitées.
+Dans la suite de cette partie, nous allons détailler comment fonctionne l'interface pour chaque fonctionnalité.
 
 ### 2.2.1 - Information sur un tag : 
 
 ![[2.2.1InfoTag1.png]]
-Dans cette partie l'utilisateur souhaite connaitre des informations sur un style musicale. La première chose qu'il doit faire c'est de renseigner le nom du style. Par la suite il doit choisir entrre avoir le résumé ou l'ensemble du contenue concernant ce style. Par defaut s'il ne coche rien, l'application lui affichera les deux. Voici comment l'application affiche le résulatat de cette fonctionnalité : 
+Dans cette partie, l'utilisateur souhaite connaître des informations sur un style musical. La première chose qu'il doit faire est de renseigner le nom du style. Par la suite, il doit choisir entre avoir le résumé ou l'ensemble du contenu concernant ce style. Par défaut, s'il ne coche rien, l'application lui affichera les deux. Voici comment l'application affiche le résultat de cette fonctionnalité :
 ![[2.2.1InfoTag2.png]]
-On peut constater qu'une information sur la date du dernier enregistrement dans la base de données est aussi renseigné. 
+On peut constater qu'une information sur la date du dernier enregistrement dans la base de données est également renseignée. 
 
 ### 2.2.2 - Information sur un album : 
 
 ![[2.2.2InfoAlbum1.png]]
 
-Dans cette partie l'utilisateur souhaite avoir des informations sur un album. Pour cela il doit renseigner le nom de l'album ainsi que le nom de l'artiste. Une fois ses choix fait il appuyer sur le boutton "Valider". Le resultat est le suivant : 
+Dans cette partie, l'utilisateur souhaite obtenir des informations sur un album. Pour cela, il doit renseigner le nom de l'album ainsi que le nom de l'artiste. Une fois ses choix faits, il appuie sur le bouton "Valider". Le résultat est le suivant :
+
 ![[2.2.2InfoAlbum2.png]]
-On peut observer que les informations renseigné à l'utilisateur sont donc le nom de l'album, le nom de l'artiste, la date de derniere modification dans la base de données, le nombre de morceaux contenue dans l'album, sa durée totale en seconde, son nombre d'écoute et pour finir la liste des musique qui composent l'album. 
+
+On peut observer que les informations fournies à l'utilisateur sont donc le nom de l'album, le nom de l'artiste, la date de dernière modification dans la base de données, le nombre de morceaux contenus dans l'album, sa durée totale en secondes, son nombre d'écoutes, et enfin la liste des musiques qui composent l'album.
 
 ### 2.2.3 - Information sur une musique  : 
 
 ![[2.2.3InfoTrack1.png]]
-Ici l'utilisateur souhaite connaitre des informations sur une musique. Pour cela il doit donc renseigner le nom de la musique et le nom de l'artiste. Dans cette exemple nous prendrons donc le titre "Holiday" du groupe Green Day.
+Ici, l'utilisateur souhaite obtenir des informations sur une musique. Pour cela, il doit renseigner le nom de la musique et le nom de l'artiste. Dans cet exemple, nous prendrons donc le titre "Holiday" du groupe Green Day.
+
 Le résultat retourné par l'application est le suivant :
+
 ![[2.2.3InfoTrack2.png]]
-Les informations affichées à l'utilisateur sont donc les nom de l'artiste, le nom de la musique, le nombre d'écoute, le nombre d'utilisateur écoutant la musique, la date de dernière modification en base et pour finir la liste des styles musicaux auquelle appartient la musique. 
+
+Les informations affichées à l'utilisateur sont donc le nom de l'artiste, le nom de la musique, le nombre d'écoutes, le nombre d'utilisateurs écoutant la musique, la date de dernière modification dans la base de données, et enfin la liste des styles musicaux auxquels appartient la musique.
 
 ### 2.2.4 - Information sur les TOPs 10  : 
-Cette fonctionnalitée permets de donner des renseignements sur les différents TOPs 10. L'utiilisateur à plusieur possibilitées : 
-* Avoir les informations sur les TOPs 10 global, c'est à dire TOPS 10 monde. 
-* Avoir les informations sur les TOPs 10 spécifiquement par pays. 
+Cette fonctionnalité permet de donner des renseignements sur les différents TOP 10. L'utilisateur a plusieurs possibilités :
 
-Pour le premier choix, l'utilisateur doit simplement coché la case attribué :
+-   Avoir les informations sur les TOP 10 mondiaux (TOP 10 global).
+-   Avoir les informations sur les TOP 10 spécifiquement par pays.
+
+Pour le premier choix, l'utilisateur doit simplement cocher la case correspondante :
 
 ![[2.2.4InfoTop1.png]]
 
-Pour le second choix, l'utilisateur peut choisir le nom du pay dans la liste déroulante comme ceci : 
+Pour le deuxième choix, l'utilisateur peut choisir le nom du pays dans la liste déroulante comme ceci :
+
 ![[2.2.4InfoTop2.png]]
 
-Une fois cette partie renseigner, l'utilisateur valide ses choix et l'application retourne : 
-* Pour le TOP 10 globale : 
+Une fois cette partie renseignée, l'utilisateur valide ses choix et l'application retourne :
+
+-   Pour le TOP 10 mondial :
+
 ![[2.2.4InfoTOP3.png]]
-* Pour le TOP 10 par pay avec l'exemple des Etats Unis :
- ![[2.2.4InfoTOP4.png]]
-L'utilisateur à donc accès au top 10 des musiques, des styles musicaux et des artistes ainsi que la date de requettage. 
+
+-   Pour le TOP 10 par pays avec l'exemple des États-Unis :
+
+![[2.2.4InfoTOP4.png]]
+
+L'utilisateur a donc accès au top 10 des musiques, des styles musicaux et des artistes, ainsi qu'à la date de requêtage.
 
 ### 2.2.5 - Information sur les musiques et albums similaires  : 
-Dans cette fonctionnalitée, l'utilisateur souhaite récupérer les musiques et les albums, des artites renseigné, qui ont le même styles musicale. Cela permet ainsi de récupére rles musiques et albums similaire entre les deux artistes : 
+Dans cette fonctionnalité, l'utilisateur souhaite récupérer les musiques et les albums des artistes renseignés, qui ont le même style musical. Cela permet ainsi de récupérer les musiques et albums similaires entre les deux artistes :
+
 ![[2.2.5InfoSimilaire1.png]]
 
-Pour ce faire l'utilisateur peut simplement entrer les noms des deux artites puis appuyer lancer l'application. Dans le cas de cette exemple, nous souhaitons avoir les informations entre l'artiste D12 et Eminem. Le resultat est le suivant : 
+Pour ce faire, l'utilisateur peut simplement entrer les noms des deux artistes, puis lancer l'application. Dans le cas de cet exemple, nous souhaitons avoir les informations entre l'artiste D12 et Eminem. Le résultat est le suivant :
+
 ![[2.2.5InfoSimilaire2.png]]
-L'utilisateur à donc accès à la liste des musiques et des albums similaires entres les artistes.
+
+L'utilisateur a donc accès à la liste des musiques et des albums similaires entre les artistes.
 
 ### 2.2.6 - Information sur un artiste : 
-Dans cette partie l'utilisateur souhaite avoir des informations sur un artiste. Pour ce faire il doit renrtrer le nom de l'artiste comme suit : 
+Dans cette partie, l'utilisateur souhaite obtenir des informations sur un artiste. Pour ce faire, il doit entrer le nom de l'artiste comme suit : 
 ![[2.2.6InfoArist1.png]]
-Une fois cette information renseigner et l'application lancé, l'utilisateur obtiens les informations suivantes : 
+Une fois cette information renseignée et l'application lancée, l'utilisateur obtient les informations suivantes :
 ![[2.2.6InfoArist2.png]]
 
-On peut constater que les informations renseigner sur l'application sont donc : 
-* le nom de l'artiste
-* le nombre d'écoute
-* la liste de ses albums
-* la liste de ses musiques
-* la liste de ses différents styles musicaux
-* la liste des artistes similaires
-* la date de la dernière mise a jours de ces informations dans la base de données
+On peut constater que les informations fournies par l'application sont donc :
+
+-   Le nom de l'artiste.
+-   Le nombre d'écoutes.
+-   La liste de ses albums.
+-   La liste de ses musiques.
+-   La liste de ses différents styles musicaux.
+-   La liste des artistes similaires.
+-   La date de la dernière mise à jour de ces informations dans la base de données.
 
 ### 2.2.7 - Information sur un nombre d'écoute : 
-Cette fonctionnalitée permet à l'utilisateur de récupérer des informations sur un Artiste, un album oui une musique, dont le nombre d'écoute est soupérieur ou inférieur à un certain seuil. Pour ce faire l'utilisateur doit renseigner succésivement ce qu'il veut. Voici quelques exemples d'utilisation : 
-*  L'utilisateur souhaite avoir des informaiton sur une musique dont le nombre d'écoute est supérieur à 500 alors il renseignera les informations suivante : 
-![[2.2.7InfoSeuil1.png]]
-* L'utilisateur souhaite avoir des informations sur un artiste dont le nombre d'écoute est inférieur à 300 alors il renseignera les informations suivante : 
-![[2.2.7InfoSeuil2.png]]
-* L'utilisarteur souhaite avoir les informations sur un album dont le nombre d'écoute est supérieur à 400 alors il renseignera les informations suivantes : 
-![[2.2.7InfoSeuil3.png]]
-Une fois que l'utilisateur a fait ses choix, voici le résultat de l'application : 
+Cette fonctionnalité permet à l'utilisateur de récupérer des informations sur un artiste, un album ou une musique, dont le nombre d'écoutes est supérieur ou inférieur à un certain seuil. Pour ce faire, l'utilisateur doit renseigner successivement ce qu'il souhaite. Voici quelques exemples d'utilisation :
 
-![[2.2.7InfoSeuil4.png]]
-L'application affiche donc, dans le cas du première exemple, l'enssemble des musiques dont le nombre d'écoute est supérieur à 500. 
-Les résultat pour les autres exemple seront sous la même forme. 
+-   L'utilisateur souhaite obtenir des informations sur une musique dont le nombre d'écoutes est supérieur à 500. Dans ce cas, il renseignera les informations suivantes : ![[2.2.7InfoSeuil1.png]]
+    
+-   L'utilisateur souhaite obtenir des informations sur un artiste dont le nombre d'écoutes est inférieur à 300. Dans ce cas, il renseignera les informations suivantes : ![[2.2.7InfoSeuil2.png]]
+    
+-   L'utilisateur souhaite obtenir des informations sur un album dont le nombre d'écoutes est supérieur à 400. Dans ce cas, il renseignera les informations suivantes : ![[2.2.7InfoSeuil3.png]]
+    
 
+Une fois que l'utilisateur a effectué ses choix, voici le résultat de l'application : ![[2.2.7InfoSeuil4.png]]
+
+L'application affiche donc, dans le cas du premier exemple, l'ensemble des musiques dont le nombre d'écoutes est supérieur à 500. Les résultats pour les autres exemples suivront la même forme.
 
 ### 2.2.8 - Publier un commentaire : 
-Cette fonctionnalitée permet à l'utilisateur de publier des commentaires sur des musiques, des albums, des styles musicaux et des artistes. 
-Pour ce faire l'utilisateur doit commencer par renseigner son nom en haut à droite de l'interface : 
+Cette fonctionnalité permet à l'utilisateur de publier des commentaires sur des musiques, des albums, des styles musicaux et des artistes. Pour ce faire, l'utilisateur doit commencer par renseigner son nom en haut à droite de l'interface :
 ![[2.2.8ComMusique0.png]]
 #### 2.2.8.1 - Publier un commentaire sur une musique : 
-Pour publier un commentaire sur une musique, l'utilisateur doit tout d'abord séléctionner la case musique. Par la suite il doit renseinger le nom de la musique, le nom de son artiste, le commentaire et pour finir la note (comprise entre 0 et 5).
+
+Pour publier un commentaire sur une musique, l'utilisateur doit tout d'abord sélectionner la case "musique". Ensuite, il doit renseigner le nom de la musique, le nom de l'artiste, le commentaire et enfin la note (comprise entre 0 et 5).
+
 ![[2.2.8.1ComMusique1.png]]
+
 #### 2.2.8.2 - Publier un commentaire sur un album : 
-Pour publier un commentaire sur un album, l'utilisateur doit tout d'abord séléctionner la case Album. Par la suite il doit renseinger le nom de l'album, le commentaire et pour finir la note.
+
+Pour publier un commentaire sur un album, l'utilisateur doit tout d'abord sélectionner la case "Album". Ensuite, il doit renseigner le nom de l'album, le commentaire et enfin la note.
+
 ![[2.2.8.2ComAlbum1.png]]
-#### 2.2.8.3 - Publier un commentaire sur un style musical : 
-Pour publier un commentaire sur un style musicale l'utilisateur doit tout d'abord séléctionner la case Tag. Par la suite il doit renseinger le nom du style musicale, le commentaire et pour finir la note.
+
+#### 2.2.8.3 - Publier un commentaire sur un style musical :
+
+Pour publier un commentaire sur un style musical, l'utilisateur doit tout d'abord sélectionner la case "Tag". Ensuite, il doit renseigner le nom du style musical, le commentaire et enfin la note.
+
 ![[2.2.8.3ComTag.png]]
+
 #### 2.2.8.4 - Publier un commentaire sur un artiste : 
-Pour publier un commentaire sur un artiste, l'utilisateur doit tout d'abord séléctionner la case Artist. Par la suite il doit renseigner le nom de l'artiste, le commentaire et pour finir la note.
+
+Pour publier un commentaire sur un artiste, l'utilisateur doit tout d'abord sélectionner la case "Artiste". Ensuite, il doit renseigner le nom de l'artiste, le commentaire et enfin la note.
+
 ![[2.2.8.4ComArtiste.png]]
 
 #### 2.2.8.5 - Résultats :
-Si vous avez une erreur dans la saisie des données, un message vous indiquera la source du problème. Par exemple :
+
+Si une erreur survient lors de la saisie des données, un message vous indiquera la source du problème. Par exemple :
+
 ![[2.2.8.5Res1.png]]
 
-Si aucun problème n'est survenue un message vous indiquera pour vous informer que le commentaire a bien été insérer en base : 
+Si aucune erreur ne survient, un message vous informera que le commentaire a bien été inséré en base de données : 
+
 ![[2.2.8.5Res2.png]]
 
 ### 2.2.9 - Consulter un commentaire : 
-Dans cette fonctionnalitée l'utilisateur peut consulter les commentaires qui ont été fait. 
-De la même manière que pour la fonctionnalitée précédente, il doit choisir entre une musique, un style musicale, un artiste ou un album. Dans le cas ou il choisis un style musicale, l'utilisateur doit renseigner le nom du style musicale comme ci-dessous : 
+Dans cette fonctionnalité, l'utilisateur peut consulter les commentaires qui ont été faits. De la même manière que pour la fonctionnalité précédente, il doit choisir entre une musique, un style musical, un artiste ou un album. Dans le cas où il choisit un style musical, l'utilisateur doit renseigner le nom du style musical comme ci-dessous :
+
 ![[2.2.9ConsultCom1.png]]
-L'application lui renvéra différentes informations tels que la date de création du commentaire, le nom de l'utilisateur l'ayant créer et le contenue du commentaire : 
+
+L'application lui renverra différentes informations telles que la date de création du commentaire, le nom de l'utilisateur l'ayant créé et le contenu du commentaire :
 ![[2.2.9ConsultCom2.png]]
 
