@@ -159,11 +159,32 @@ Les résultat pour les autres exemple seront sous la même forme.
 
 ### 2.2.8 - Publier un commentaire : 
 Cette fonctionnalitée permet à l'utilisateur de publier des commentaires sur des musiques, des albums, des styles musicaux et des artistes. 
+Pour ce faire l'utilisateur doit commencer par renseigner son nom en haut à droite de l'interface : 
+![[2.2.8ComMusique0.png]]
 #### 2.2.8.1 - Publier un commentaire sur une musique : 
+Pour publier un commentaire sur une musique, l'utilisateur doit tout d'abord séléctionner la case musique. Par la suite il doit renseinger le nom de la musique, le nom de son artiste, le commentaire et pour finir la note (comprise entre 0 et 5).
 ![[2.2.8.1ComMusique1.png]]
 #### 2.2.8.2 - Publier un commentaire sur un album : 
+Pour publier un commentaire sur un album, l'utilisateur doit tout d'abord séléctionner la case Album. Par la suite il doit renseinger le nom de l'album, le commentaire et pour finir la note.
 ![[2.2.8.2ComAlbum1.png]]
 #### 2.2.8.3 - Publier un commentaire sur un style musical : 
+Pour publier un commentaire sur un style musicale l'utilisateur doit tout d'abord séléctionner la case Tag. Par la suite il doit renseinger le nom du style musicale, le commentaire et pour finir la note.
 ![[2.2.8.3ComTag.png]]
 #### 2.2.8.4 - Publier un commentaire sur un artiste : 
+Pour publier un commentaire sur un artiste, l'utilisateur doit tout d'abord séléctionner la case Artist. Par la suite il doit renseigner le nom de l'artiste, le commentaire et pour finir la note.
 ![[2.2.8.4ComArtiste.png]]
+
+#### 2.2.8.5 - Résultats :
+Si vous avez une erreur dans la saisie des données, un message vous indiquera la source du problème. Par exemple :
+![[2.2.8.5Res1.png]]
+
+Si aucun problème n'est survenue un message vous indiquera pour vous informer que le commentaire a bien été insérer en base : 
+![[2.2.8.5Res2.png]]
+
+### 2.2.9 - Consulter un commentaire : 
+Dans cette fonctionnalitée l'utilisateur peut consulter les commentaires qui ont été fait. 
+De la même manière que pour la fonctionnalitée précédente, il doit choisir entre une musique, un style musicale, un artiste ou un album. Dans le cas ou il choisis un style musicale, l'utilisateur doit renseigner le nom du style musicale comme ci-dessous : 
+![[2.2.9ConsultCom1.png]]
+L'application lui renvéra différentes informations tels que la date de création du commentaire, le nom de l'utilisateur l'ayant créer et le contenue du commentaire : 
+![[2.2.9ConsultCom2.png]]
+
