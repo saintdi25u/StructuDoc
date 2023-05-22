@@ -15,6 +15,24 @@ Alors, pour éviter de devoir accéder à plusieurs collections pour récupérer
 
 ![](assets/1.png)
 
+#### Patron de référence étendue
+
+Nous avons utilisé le patron de référence étendue pour permettre à l'utilisateur d'obtenir des informations plus précise sur ce qu'il recherche.
+Par exemple, il a beaucoup aimé l'artiste de la chanson "Boyka".
+
+![](assets/boyka.png)
+
+On observe alors que l'artiste qui a réalisé cette chanson est "Zamdane", alors, si l'utilisateur souhaite avoir plus d'information sur cet artiste, il peut les consulter dans la collection des artistes.
+
+![](assets/zamdane.png)
+
+Cela permet alors d'optimiser les indexes de recherches et d'avoir des requêtes plus simples à écrire et plus rapide à éxécuter.
+L'inconvénient de ce patron est que la mise à jour d'un document ne se résume pas à un simple changement de valeur à une clé donnée. 
+
+
+
+
+
 
 ### 1.2 - Performances 
 
