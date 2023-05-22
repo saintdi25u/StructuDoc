@@ -6,6 +6,23 @@ Ce projet a été réalisé par MANUELLI Théo et SAINT-DIZIER Corentin.
 
 Tout d'abord,  notre base de données est nommé de la façon suivante : `SD2023_SAINT-DIZIER_MANUELLI` conformément à ce qui est demandé dans le sujet. 
 
+Nous avons au total 6 collections : 
+
+- GCSTM_Tracks : Cette collection contient touutes les données relatives à une musique. Voici les informations que nous avons décidé de stocker : le nom, l'artiste, le nombre d'auditeur, le nombre de lecture, les styles de la musique et la date de collection des données afin de pouvoir les mettre à jour toutes les 72h.
+
+- GCSTM_Top10 : Cette collection contient tous les classement pour un pays. C'est à dire qu'à l'interieur de cette collection nous avons : le lieu du classement (un nom de pays ou global pour le monde entier), le top 10 des musiques du lieu, le top 10 des artistes, le nombre d'écoute et le nopmbre d'auditeurs ainsi que la date de collection des données pour pouvoir voir l'évolution dans le temps des classements.
+
+- GCSTM_tag : Cette collection contient toutes les données concernant un style de musique. On retrouvera les informations suivantes : le nom du style, le résumé du style,le nombre d'utilisateur qui écoute ce style de musique, la date de collection des données pour pouvoir mettre à jour et une explication du style.
+
+- GCSTM_artist: Cette collection contient toutes les informations sur un artiste. On pourra retrouver son nom, ces albums, ces musiques, ces styles de musique, son nombre d'écoute total, des artistes similaire et la date de récupération des informations. 
+
+- GCSTM_album : Dans cette collection, on pourra retrouver le nom de l'album, l'artiste, le nombre de musique au sein de l'album, la liste des musiques au sein de l'album, les styles de musiques de cette album, la durée totale de l'album, la date de récupération des informations et le nombre d'écoute total de l'album. 
+
+- GCSTM_opinion : Cette collection rassemble toutes les informations concernant un commentaire publié par un utilisateur. On pourra y retrouver l'auteur du commentaire, le sujet auquel l'utilisateur commente, le nom du sujet, la note attribué et le commentaire ainsi que la date d'insertion du commentaire.
+
+
+
+
 ### 1.1 - Pattern utilisés
 
 #### Patron polymorphique
@@ -30,10 +47,6 @@ Cela permet alors d'optimiser les indexes de recherches et d'avoir des requêtes
 L'inconvénient de ce patron est que la mise à jour d'un document ne se résume pas à un simple changement de valeur à une clé donnée. 
 
 
-
-
-
-
 ### 1.2 - Performances 
 
 Concernant le performance de notre base de données, nous avons fait en sorte d'effectuer le moins de requête/jointure possible pour obtenir une/plusieurs information(s). 
@@ -44,6 +57,7 @@ Mais, dès lors que les données sont deja présentes au sein de la base de donn
 
 ### 1.3 - Schéma graphique de l'organisation de la base de données
 
+JE SAIS PAS SI ON LE FAIT OU PAS.
 
 ## 2 - Interface homme-machine
 
